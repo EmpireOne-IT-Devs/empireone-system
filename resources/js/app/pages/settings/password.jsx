@@ -1,11 +1,11 @@
 import PasswordController from '@/actions/App/Http/Controllers/Settings/PasswordController';
-import SettingsLayout from '@/layouts/settings/layout';
+import SettingsLayout from './layout';
 import { Transition } from '@headlessui/react';
 import { Form, Head } from '@inertiajs/react';
 import { useRef } from 'react';
 import InputError from '../../components/input-error';
 
-import { edit } from '@/routes/password';
+import { edit } from '../../routes/password';
 import { Button } from '../../components/button';
 import HeadingSmall from '../../components/heading-small';
 import { Input } from '../../components/input';

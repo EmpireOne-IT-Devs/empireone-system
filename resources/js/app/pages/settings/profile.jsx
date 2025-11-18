@@ -1,5 +1,5 @@
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
-import { send } from '@/routes/verification';
+import { send } from '../../routes/verification';
 import { Transition } from '@headlessui/react';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 
@@ -10,7 +10,7 @@ import { Button } from '../../components/button';
 import { Input } from '../../components/input';
 import { Label } from '../../components/label';
 import SettingsLayout from './layout';
-import { edit } from '@/routes/profile';
+import { edit } from '../../routes/profile';
 import Layout from '../administrator/layout';
 const breadcrumbs = [
     {

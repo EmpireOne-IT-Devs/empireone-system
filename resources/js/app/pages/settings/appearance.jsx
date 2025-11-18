@@ -4,7 +4,7 @@ import AppearanceTabs from './_sections/appearance-tabs';
 import HeadingSmall from '../../components/heading-small';
 
 import SettingsLayout from './layout';
-import { edit as editAppearance } from '@/routes/appearance';
+import { edit as editAppearance } from '../../routes/appearance';
 
 import Layout from '../administrator/layout';
 const breadcrumbs = [
