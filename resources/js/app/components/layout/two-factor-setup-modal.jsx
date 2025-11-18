@@ -1,20 +1,20 @@
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
+import InputError from '../../components/input-error';
+import { Button } from '../../components/button';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog';
+} from '../../components/dialog';
 import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
-} from '@/components/ui/input-otp';
-import { useClipboard } from '@/hooks/use-clipboard';
-import { OTP_MAX_LENGTH } from '@/hooks/use-two-factor-auth';
-import { confirm } from '@/routes/two-factor';
+} from '../../components/input-otp';
+import { useClipboard } from '../../hooks/use-clipboard';
+import { OTP_MAX_LENGTH } from '../../hooks/use-two-factor-auth';
+import { confirm } from '../../routes/two-factor';
 import { Form } from '@inertiajs/react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { Check, Copy, ScanLine } from 'lucide-react';

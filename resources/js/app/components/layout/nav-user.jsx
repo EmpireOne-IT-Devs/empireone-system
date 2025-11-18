@@ -1,4 +1,4 @@
-import { useIsMobile } from '@/hooks/use-mobile';
+
 import { usePage } from '@inertiajs/react';
 import { ChevronsUpDown } from 'lucide-react';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '../sidebar';
 import { UserInfo } from './user-info';
 import { UserMenuContent } from './user-menu-content';
+import { useIsMobile } from '../../hooks/use-mobile';
 
 export function NavUser() {
     const { auth } = usePage().props;

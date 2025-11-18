@@ -1,6 +1,6 @@
 import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 
-import { request } from '@/routes/password';
+import { request } from '../../../routes/password';
 import { Form, Head, Link } from '@inertiajs/react';
 import { Button } from '../../../components/button';
 import { Checkbox } from '../../../components/checkbox';

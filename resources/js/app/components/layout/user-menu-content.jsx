@@ -1,5 +1,5 @@
-import { logout } from '@/routes';
-import { edit } from '@/routes/profile';
+import { logout } from '../../routes';
+import { edit } from '../../routes/profile';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
 import { useMobileNavigation } from '../../hooks/use-mobile-navigation';
