@@ -35,6 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('raffle', function () {
                 return Inertia::render('administrator/engagement/raffle/page');
             });
+            Route::get('raffle/{id}', function () {
+                return Inertia::render('administrator/engagement/raffle/id/page');
+            });
         });
 
         Route::get('users/users1', function () {

@@ -1,7 +1,11 @@
+import Layout from '../../layout';
 import React from 'react'
+import DetailSection from './_sections/detail-section';
 
 export default function Page() {
   return (
-    <div>page</div>
+    <Layout>
+        <DetailSection />
+    </Layout>
   )
 }
