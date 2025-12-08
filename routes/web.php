@@ -12,6 +12,19 @@ Route::get('/auth/register', function () {
     return Inertia::render('auth/register/page');
 });
 
+
+Route::prefix('raffle')->group(function () {
+    Route::get('/draw', function () {
+        return Inertia::render('raffle/draw/page');
+    });
+    Route::get('/home', function () {
+        return Inertia::render('raffle/home/page');
+    });
+    Route::get('/registration', function () {
+        return Inertia::render('raffle/registration/page');
+    });
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/administrator/dashboard', function () {
         return Inertia::render('administrator/dashboard/page');
@@ -25,7 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/administrator/departments/departments1', function () {
         return Inertia::render('administrator/users/page');
     });
-      Route::get('/administrator/departments/create', function () {
+    Route::get('/administrator/departments/create', function () {
         return Inertia::render('administrator/users/page');
     });
 });
