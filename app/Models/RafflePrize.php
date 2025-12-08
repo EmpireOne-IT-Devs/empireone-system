@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RaffleItem extends Model
+class RafflePrize extends Model
 {
     protected $fillable = [
         'winner_id',

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('raffle_items', function (Blueprint $table) {
+        Schema::create('raffle_prizes', function (Blueprint $table) {
             $table->id();
             $table->string('winner_id')->nullable();
             $table->string('name')->nullable();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('raffle_items');
+        Schema::dropIfExists('raffle_prizes');
     }
 };
