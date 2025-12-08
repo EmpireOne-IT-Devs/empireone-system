@@ -1,0 +1,5 @@
+create raffle events
+-> name
+-> description
+-> start_at
+-> end_at
