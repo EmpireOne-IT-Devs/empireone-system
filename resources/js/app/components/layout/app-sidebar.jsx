@@ -35,20 +35,31 @@ const mainNavItems = [
         ]
     },
     {
-        title: 'Departments',
-        href: '/administrator/departments',
+        title: 'Engagement',
+        href: '/administrator/engagement',
         icon: User,
         children:[
             {
-                title: 'View Departments',
-                href: '/administrator/departments/departments1',
-            },
-            {
-                title: 'Create Department',
-                href: '/administrator/departments/create',
+                title: 'Raffle',
+                href: '/administrator/engagement/raffle',
             },
         ]
     },
+    //  {
+    //     title: 'Departments',
+    //     href: '/administrator/departments',
+    //     icon: User,
+    //     children:[
+    //         {
+    //             title: 'View Departments',
+    //             href: '/administrator/departments/departments1',
+    //         },
+    //         {
+    //             title: 'Create Department',
+    //             href: '/administrator/departments/create',
+    //         },
+    //     ]
+    // },
 ];
 
 const footerNavItems = [

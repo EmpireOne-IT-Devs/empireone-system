@@ -26,20 +26,29 @@ Route::prefix('raffle')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/administrator/dashboard', function () {
-        return Inertia::render('administrator/dashboard/page');
-    })->name('dashboard');
-    Route::get('/administrator/users/users1', function () {
-        return Inertia::render('administrator/users/page');
-    });
-    Route::get('/administrator/users/create', function () {
-        return Inertia::render('administrator/users/page');
-    });
-    Route::get('/administrator/departments/departments1', function () {
-        return Inertia::render('administrator/users/page');
-    });
-    Route::get('/administrator/departments/create', function () {
-        return Inertia::render('administrator/users/page');
+    Route::prefix('administrator')->group(function () {
+        Route::get('dashboard', function () {
+            return Inertia::render('administrator/dashboard/page');
+        })->name('dashboard');
+
+        Route::prefix('engagement')->group(function () {
+            Route::get('raffle', function () {
+                return Inertia::render('administrator/engagement/raffle/page');
+            });
+        });
+
+        Route::get('users/users1', function () {
+            return Inertia::render('administrator/users/page');
+        });
+        Route::get('users/create', function () {
+            return Inertia::render('administrator/users/page');
+        });
+        Route::get('departments/departments1', function () {
+            return Inertia::render('administrator/users/page');
+        });
+        Route::get('departments/create', function () {
+            return Inertia::render('administrator/users/page');
+        });
     });
 });
 
