@@ -2,7 +2,7 @@ import React from "react";
 import { Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
-export default function Modal({ isOpen, onClose, title, children,width="" }) {
+export default function Modal({ isOpen, onClose, title, children, width = "" }) {
     return (
         <Transition show={isOpen} as={Fragment}>
             <div as="div" className="relative z-50" onClose={onClose}>
@@ -30,27 +30,29 @@ export default function Modal({ isOpen, onClose, title, children,width="" }) {
                         leaveFrom="opacity-100 scale-100 translate-y-0"
                         leaveTo="opacity-0 scale-95 translate-y-2"
                     >
-                        <div className={`w-full ${width} overflow-auto max-h-[95vh] py-12 transform rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all`}>
+                        <div className={`relative w-full ${width} max-h-[90vh] transform rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all`}>
+                            {/* Close button */}
+                            <button
+                                onClick={() => onClose(false)}
+                                className="absolute top-3 right-6 text-3xl text-red-400 hover:text-red-600 transition-colors"
+                            >
+                                &times;
+                            </button>
+
                             {/* Title */}
                             {title && (
                                 <div
                                     as="h3"
-                                    className="text-lg font-medium leading-6 text-gray-900 mb-4"
+                                    className="text-lg font-medium leading-6 text-gray-900 mb-4 pr-8"
                                 >
                                     {title}
                                 </div>
                             )}
 
                             {/* Content */}
-                            <div>{children}</div>
-
-                            {/* Close button (optional) */}
-                            <button
-                                onClick={()=>onClose(false)}
-                                className="absolute top-3 right-3 text-4xl text-red-600 hover:text-red-700 "
-                            >
-                                &times;
-                            </button>
+                            <div className="overflow-y-auto max-h-[calc(90vh-8rem)]">
+                                {children}
+                            </div>
                         </div>
                     </Transition.Child>
                 </div>

@@ -348,9 +348,9 @@ export default function CreateSection() {
                     </div>
 
                     <div className="flex justify-end gap-3 border-t pt-4">
-                        <Button variant="outline" onClick={handleCloseModal}>
+                        {/* <Button variant="outline" onClick={handleCloseModal}>
                             Cancel
-                        </Button>
+                        </Button> */}
                         <Button variant="primary" onClick={handleSubmit}>
                             Save Event
                         </Button>

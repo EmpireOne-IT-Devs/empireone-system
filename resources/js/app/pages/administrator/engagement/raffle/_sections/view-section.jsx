@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import Button from '../../../../../_components/button';
+import Button from '../../../../../_components/button'
 
 export default function ViewSection() {
     return (
