@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('raffle_winners', function (Blueprint $table) {
             $table->id();
+            $table->string('raffle_event_id')->nullable();
             $table->foreignId('raffle_id')->nullable()->constrained('raffles')->onDelete('cascade');
             $table->foreignId('winner_id')->constrained('raffle_participants')->onDelete('cascade');
             $table->string('prize_name')->nullable();
