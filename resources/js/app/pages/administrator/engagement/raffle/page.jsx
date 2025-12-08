@@ -1,5 +1,7 @@
 import { Head } from '@inertiajs/react';
 import Layout from '../../layout';
+import CreateSection from './_sections/create-section';
+import TableSection from './_sections/table-section';
 
 export default function Page() {
     const breadcrumbs = [
@@ -15,7 +17,8 @@ export default function Page() {
     return (
         <Layout breadcrumbs={breadcrumbs}>
             <Head title="Raffle" />
-            {/* <TableSection /> */}
+          
+            <TableSection />
         </Layout>
     );
 }

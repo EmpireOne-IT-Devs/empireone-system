@@ -4,6 +4,7 @@ import Layout from '../layout';
 import { Button } from '../../../components/button';
 import { Card, CardHeader, CardTitle } from '../../../components/card';
 import TableSection from './_sections/table-section';
+import CreateSection from './_sections/create-section';
 
 const breadcrumbs = [
     // {
@@ -20,6 +21,7 @@ export default function Page() {
         <Layout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
             <TableSection />
+           
         </Layout>
     );
 }

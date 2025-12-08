@@ -1,119 +1,187 @@
-import React from "react";
+import React from 'react';
 
 const HeaderSection = () => {
+    // Add the font import
+    React.useEffect(() => {
+        const link = document.createElement('link');
+        link.href =
+            'https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;700&display=swap';
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+    }, []);
+
     return (
-        <div className="relative bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white py-20 px-8 shadow-2xl overflow-hidden">
-            {/* Twinkling Stars Background */}
-            <div className="absolute inset-0 opacity-20">
-                {[...Array(30)].map((_, i) => (
+        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white shadow-2xl">
+            <div className="absolute inset-0 opacity-10">
+                {[...Array(25)].map((_, i) => (
+                    <img
+                        key={i}
+                        src="/images/empireone.png-removebg-preview.png"
+                        alt=""
+                        className="absolute animate-pulse"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                            width: `${50 + Math.random() * 70}px`,
+                            height: `${50 + Math.random() * 70}px`,
+                            animationDelay: `${Math.random() * 4}s`,
+                            animationDuration: `${4 + Math.random() * 4}s`,
+                            transform: `rotate(${Math.random() * 360}deg)`,
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="absolute inset-0 opacity-30">
+                {[...Array(150)].map((_, i) => (
                     <div
                         key={i}
                         className="absolute animate-pulse"
                         style={{
                             left: `${Math.random() * 100}%`,
                             top: `${Math.random() * 100}%`,
-                            animationDelay: `${Math.random() * 2}s`,
-                            animationDuration: `${2 + Math.random() * 2}s`,
+                            animationDelay: `${Math.random() * 3}s`,
+                            animationDuration: `${2 + Math.random() * 3}s`,
                         }}
                     >
                         <div
-                            className="rounded-full bg-white"
+                            className="rounded-full bg-white shadow-lg"
                             style={{
-                                width: `${2 + Math.random() * 4}px`,
-                                height: `${2 + Math.random() * 4}px`,
+                                width: `${1 + Math.random() * 3}px`,
+                                height: `${1 + Math.random() * 3}px`,
+                                boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)',
                             }}
                         />
                     </div>
                 ))}
             </div>
 
-            {/* Content */}
-            <div className="max-w-6xl mx-auto relative h-screen z-10">
-                <div className="text-center space-y-6">
-                    {/* Trophy Icon */}
+            <div className="pointer-events-none absolute inset-0">
+                <div className="absolute top-0 left-1/4 h-96 w-96 animate-pulse rounded-full bg-purple-500 opacity-20 blur-3xl"></div>
+                <div
+                    className="absolute right-1/4 bottom-0 h-96 w-96 animate-pulse rounded-full bg-blue-500 opacity-20 blur-3xl"
+                    style={{ animationDelay: '1s' }}
+                ></div>
+            </div>
+
+            <div className="relative z-10 mx-auto max-w-6xl">
+                <div className="space-y-8 text-center">
                     <div className="inline-block animate-bounce">
-                        <div className="text-8xl mb-4">
-                            {/* 🎰 */}
-                           🎰
-                        </div>
+                        <img
+                            src="/images/empireone.png-removebg-preview.png"
+                            alt="Slot Machine"
+                            className="mb-2 w-40 h-40  drop-shadow-2xl"
+                            style={{
+                                filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.5))',
+                            }}
+                        />
                     </div>
 
-                    {/* Main Title */}
-                    <div className="space-y-3">
-                        <h1 className="text-7xl font-black tracking-tight animate-pulse">
-                            <span className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 text-transparent bg-clip-text drop-shadow-2xl">
-                                EmpireOne
+                    <div className="space-y-5">
+                        <h1
+                            className="text-9xl tracking-tight"
+                            style={{
+                                // fontFamily: "'Great Vibes', cursive",
+                                textShadow:
+                                    '0 0 40px rgba(255, 215, 0, 0.5), 0 0 80px rgba(255, 215, 0, 0.3)',
+                            }}
+                        >
+                            <span className="bg-gradient-to-r from-yellow-200 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                                <strong>Empire One</strong>
                             </span>
                         </h1>
-                        <h2 className="text-6xl font-bold tracking-wide">
-                            <span className="bg-gradient-to-r from-blue-200 to-purple-200 text-transparent bg-clip-text">
-                                Grand Raffle
+                        <h2
+                            className="overflow-visible text-7xl tracking-wider"
+                            style={{
+                                // fontFamily: "'Great Vibes', cursive",
+                                textShadow: '0 0 30px rgba(147, 197, 253, 0.5)',
+                            }}
+                        >
+                            <span className="bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                                <strong>Grand Raffle Draw</strong>
                             </span>
                         </h2>
                     </div>
 
-                    {/* Decorative Line */}
-                    <div className="flex items-center justify-center space-x-4 py-4">
-                        <div className="h-1 w-24 bg-gradient-to-r from-transparent via-yellow-400 to-transparent rounded-full"></div>
+                    <div className="flex items-center justify-center space-x-6 py-6">
+                        <div className="flex items-center space-x-2">
+                            <div className="text-2xl opacity-60">✨</div>
+                            <div className="h-0.5 w-32 rounded-full bg-gradient-to-r from-transparent via-yellow-400 to-yellow-400"></div>
+                        </div>
                         <div
-                            className="text-4xl animate-spin"
-                            style={{ animationDuration: "3s" }}
+                            className="animate-spin text-5xl"
+                            style={{
+                                animationDuration: '4s',
+                                filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.8))',
+                            }}
                         >
                             ⭐
                         </div>
-                        <div className="h-1 w-24 bg-gradient-to-r from-transparent via-yellow-400 to-transparent rounded-full"></div>
+                        <div className="flex items-center space-x-2">
+                            <div className="h-0.5 w-32 rounded-full bg-gradient-to-l from-transparent via-yellow-400 to-yellow-400"></div>
+                            <div className="text-2xl opacity-60">✨</div>
+                        </div>
                     </div>
 
-                    {/* Subtitle Badge */}
-                    <div className="inline-block bg-white bg-opacity-10 backdrop-blur-sm border-2 border-white border-opacity-30 rounded-2xl px-8 py-4 shadow-xl transform hover:scale-105 transition-transform duration-300">
-                        <p className="text-3xl font-bold text-yellow-300 drop-shadow-lg">
-                            🎉 Year End 2025 🎉
+                    <div className="inline-block transform rounded-3xl border-2 border-yellow-400/40 bg-gradient-to-r from-white/10 to-white/5 px-10 py-5 shadow-2xl backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-yellow-400/60">
+                        <p
+                            className="text-4xl font-bold text-yellow-300 drop-shadow-lg"
+                            style={{
+                                fontFamily: "'Cinzel', serif",
+                                textShadow: '0 0 20px rgba(253, 224, 71, 0.5)',
+                            }}
+                        >
+                            🎉 Year End Party 2025 🎉
                         </p>
                     </div>
 
-                    {/* Decorative Emojis */}
-                    <div className="flex justify-center items-center space-x-8 pt-4 text-2xl">
+                    <div className="flex items-center justify-center space-x-10 pt-6 text-3xl">
                         <span
-                            className="opacity-70 animate-bounce"
+                            className="transform animate-bounce cursor-pointer opacity-80 transition-transform hover:scale-125"
                             style={{
-                                animationDelay: "0s",
-                                animationDuration: "2s",
+                                animationDelay: '0s',
+                                animationDuration: '2s',
+                                filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
                             }}
                         >
                             🎁
                         </span>
                         <span
-                            className="opacity-70 animate-bounce"
+                            className="transform animate-bounce cursor-pointer opacity-80 transition-transform hover:scale-125"
                             style={{
-                                animationDelay: "0.2s",
-                                animationDuration: "2s",
+                                animationDelay: '0.2s',
+                                animationDuration: '2s',
+                                filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
                             }}
                         >
                             ✨
                         </span>
                         <span
-                            className="opacity-70 animate-bounce"
+                            className="transform animate-bounce cursor-pointer opacity-80 transition-transform hover:scale-125"
                             style={{
-                                animationDelay: "0.4s",
-                                animationDuration: "2s",
+                                animationDelay: '0.4s',
+                                animationDuration: '2s',
+                                filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
                             }}
                         >
                             🏆
                         </span>
                         <span
-                            className="opacity-70 animate-bounce"
+                            className="transform animate-bounce cursor-pointer opacity-80 transition-transform hover:scale-125"
                             style={{
-                                animationDelay: "0.6s",
-                                animationDuration: "2s",
+                                animationDelay: '0.6s',
+                                animationDuration: '2s',
+                                filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
                             }}
                         >
                             ✨
                         </span>
                         <span
-                            className="opacity-70 animate-bounce"
+                            className="transform animate-bounce cursor-pointer opacity-80 transition-transform hover:scale-125"
                             style={{
-                                animationDelay: "0.8s",
-                                animationDuration: "2s",
+                                animationDelay: '0.8s',
+                                animationDuration: '2s',
+                                filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.5))',
                             }}
                         >
                             🎁
@@ -122,8 +190,7 @@ const HeaderSection = () => {
                 </div>
             </div>
 
-            {/* Bottom Gradient Fade */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent opacity-30 pointer-events-none"></div>
+            <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-40 bg-gradient-to-t from-black via-black/50 to-transparent opacity-40"></div>
         </div>
     );
 };
