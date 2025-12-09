@@ -2,7 +2,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../lib/utils';
 
-function Input({ className, type = 'text', ...props }) {
+function Input({ className, type = 'text', error, ...props }) {
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
 
@@ -35,6 +35,7 @@ function Input({ className, type = 'text', ...props }) {
                     )}
                 </button>
             )}
+            {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
         </div>
     );
 }

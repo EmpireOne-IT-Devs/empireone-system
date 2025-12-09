@@ -30,7 +30,7 @@ export default function Modal({ isOpen, onClose, title, children, width = "" }) 
                         leaveFrom="opacity-100 scale-100 translate-y-0"
                         leaveTo="opacity-0 scale-95 translate-y-2"
                     >
-                        <div className={`relative w-full ${width} max-h-[90vh] transform rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all`}>
+                        <div className={`relative w-full ${width} border-2 border-white max-h-[90vh] transform rounded-xl  p-6 text-left align-middle shadow-xl transition-all`}>
                             {/* Close button */}
                             <button
                                 onClick={() => onClose(false)}
@@ -43,7 +43,7 @@ export default function Modal({ isOpen, onClose, title, children, width = "" }) 
                             {title && (
                                 <div
                                     as="h3"
-                                    className="text-lg font-medium leading-6 text-gray-900 mb-4 pr-8"
+                                    className="text-lg font-medium leading-6 mb-4 pr-8"
                                 >
                                     {title}
                                 </div>
