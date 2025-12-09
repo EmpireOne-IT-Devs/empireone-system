@@ -189,7 +189,7 @@ export default function CreateSection() {
                                     onClick={() =>
                                         append({
                                             name: '',
-                                            quantity: 1,
+                                            quantity: null,
                                             description: '',
                                         })
                                     }
