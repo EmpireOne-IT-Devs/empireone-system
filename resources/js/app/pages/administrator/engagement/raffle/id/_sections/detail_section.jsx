@@ -1,4 +1,5 @@
 import moment from 'moment';
+import TabsSection from './tabs_section';
 
 export default function DetailSection({ raffle }) {
     return (
@@ -11,6 +12,9 @@ export default function DetailSection({ raffle }) {
                     <p className="mt-1 max-w-2xl text-sm ">
                         Details and description of the event.
                     </p>
+                </div>
+                <div>
+                    <TabsSection />
                 </div>
             </div>
 
@@ -71,7 +75,7 @@ export default function DetailSection({ raffle }) {
                         </dd>
                     </div>
 
-                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium ">
                             Winners
                         </dt>
@@ -80,9 +84,9 @@ export default function DetailSection({ raffle }) {
                                 raffle?.number_of_winners ||
                                 '—'}
                         </dd>
-                    </div>
+                    </div> */}
 
-                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium ">
                             Participant Source
                         </dt>
@@ -95,9 +99,9 @@ export default function DetailSection({ raffle }) {
                                       : '—'}
                             </span>
                         </dd>
-                    </div>
+                    </div> */}
 
-                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium ">
                             Participants
                         </dt>
@@ -123,7 +127,7 @@ export default function DetailSection({ raffle }) {
                                 '—'
                             )}
                         </dd>
-                    </div>
+                    </div> */}
 
                     <div className="px-4 py-2 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
                         <dt className="text-sm font-medium ">
