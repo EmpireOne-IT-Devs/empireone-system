@@ -134,7 +134,7 @@ export default function CreateSection() {
 
     return (
         <div className="w-full">
-            <div className="mt-2 flex justify-end">
+            <div className="flex justify-end">
                 <Button
                     className="px-6 py-2"
                     variant="success"
@@ -150,7 +150,7 @@ export default function CreateSection() {
                 title="Create Event"
                 width="max-w-6xl"
             >
-                <div className="space-y-4">
+                <div className="space-y-4 my-5">
                     <Input
                         label="Event Name"
                         name="eventName"
@@ -218,34 +218,6 @@ export default function CreateSection() {
                         />
                     </div>
 
-                    <Input
-                        label="Winners"
-                        type="text"
-                        name="winners"
-                        value={formData.winners}
-                        onChange={(e) =>
-                            handleInputChange('winners', e.text.arget.value)
-                        }
-                        required
-                        error={errors.winners}
-                    />
-
-                    <Select
-                        label="Participants Source"
-                        name="participantSource"
-                        value={formData.participantSource}
-                        onChange={(e) =>
-                            handleInputChange(
-                                'participantSource',
-                                e.target.value,
-                            )
-                        }
-                        options={[
-                            { value: 'manual', label: 'Manual Input' },
-                            { value: 'csv', label: 'Upload CSV' },
-                        ]}
-                    />
-
                     {formData.participantSource === 'manual' && (
                         <Input
                             label="Participants"
@@ -287,7 +259,7 @@ export default function CreateSection() {
                         {prizes.map((p, idx) => (
                             <div
                                 key={idx}
-                                className="mb-2 space-y-2 rounded border bg-gray-50 p-3"
+                                className="flex flex-col gap-3 space-y-2 rounded border bg-gray-50 p-3"
                             >
                                 <Input
                                     label={`Prize ${idx + 1} Name`}
@@ -329,6 +301,7 @@ export default function CreateSection() {
                                     <Button
                                         variant="danger"
                                         size="sm"
+                                        className="w-1/8"
                                         onClick={() => removePrize(idx)}
                                     >
                                         Remove Prize
@@ -336,7 +309,7 @@ export default function CreateSection() {
                                 )}
                             </div>
                         ))}
-                        <div className="flex justify-end">
+                        <div className="my-4 flex justify-end">
                             <Button
                                 variant="success"
                                 size="sm"

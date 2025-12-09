@@ -203,12 +203,12 @@ export default function TableSection() {
                     </p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <Input
                         placeholder="Search by name, description or date..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        className="w-64 max-w-lg"
+                        className="w-64 h-10 max-w-lg"
                     />
                     <div className="flex items-center gap-3">
                         <ResetSection />

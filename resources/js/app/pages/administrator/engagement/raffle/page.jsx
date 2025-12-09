@@ -13,7 +13,6 @@ export default function Page() {
     return (
         <Layout breadcrumbs={breadcrumbs}>
             <Head title="Raffle" />
-
             <TableSection />
         </Layout>
     );

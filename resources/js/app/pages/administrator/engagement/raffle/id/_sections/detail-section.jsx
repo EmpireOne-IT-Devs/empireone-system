@@ -1,16 +1,14 @@
 import moment from 'moment';
-import BackSection from './back-section';
 
 export default function DetailSection({ raffle }) {
     return (
-        <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-           <div className="mb-4 px-4 sm:px-6"><BackSection /></div> 
+        <div className="overflow-hidden shadow-sm sm:rounded-lg">
             <div className="flex justify-between px-4 py-6 sm:px-6">
                 <div className="items-start">
-                    <h3 className="text-base font-semibold text-gray-900">
+                    <h3 className="text-base font-semibold ">
                         Event Information
                     </h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    <p className="mt-1 max-w-2xl text-sm ">
                         Details and description of the event.
                     </p>
                 </div>
@@ -19,19 +17,19 @@ export default function DetailSection({ raffle }) {
             <div className="border-t border-gray-100">
                 <dl className="divide-y divide-gray-100">
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Event Name
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
                             {raffle?.event_name || raffle?.name || '—'}
                         </dd>
                     </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Event Type
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
                             <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-blue-700/10 ring-inset">
                                 {raffle?.event_type || '—'}
                             </span>
@@ -39,19 +37,19 @@ export default function DetailSection({ raffle }) {
                     </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Description
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
                             {raffle?.description || '—'}
                         </dd>
                     </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Start Date
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
                             {raffle?.start_date
                                 ? moment(raffle.start_date).format(
                                       'MMMM DD, YYYY',
@@ -61,10 +59,10 @@ export default function DetailSection({ raffle }) {
                     </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             End Date
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
                             {raffle?.end_date
                                 ? moment(raffle.end_date).format(
                                       'MMMM DD, YYYY',
@@ -74,10 +72,10 @@ export default function DetailSection({ raffle }) {
                     </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Winners
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
                             {raffle?.winners ||
                                 raffle?.number_of_winners ||
                                 '—'}
@@ -85,11 +83,11 @@ export default function DetailSection({ raffle }) {
                     </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Participant Source
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
-                            <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-gray-600/20 ring-inset">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
+                            <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium  ring-1 ring-gray-600/20 ring-inset">
                                 {raffle?.participant_source === 'manual'
                                     ? 'Manual Input'
                                     : raffle?.participant_source === 'csv'
@@ -100,10 +98,10 @@ export default function DetailSection({ raffle }) {
                     </div>
 
                     <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Participants
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
                             {raffle?.participants ? (
                                 Array.isArray(raffle.participants) ? (
                                     <div className="flex flex-wrap gap-1">
@@ -128,10 +126,10 @@ export default function DetailSection({ raffle }) {
                     </div>
 
                     <div className="px-4 py-2 sm:grid sm:grid-cols-2 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Prizes
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0 sm:pl-4">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0 sm:pl-4">
                             {raffle?.prizes &&
                             Array.isArray(raffle.prizes) &&
                             raffle.prizes.length > 0 ? (
@@ -139,12 +137,12 @@ export default function DetailSection({ raffle }) {
                                     {raffle.prizes.map((prize, idx) => (
                                         <div
                                             key={idx}
-                                            className="rounded-lg border border-gray-200 bg-gray-50 p-3"
+                                            className="rounded-lg border border-gray-200  p-3"
                                         >
-                                            <div className="font-medium text-gray-900">
+                                            <div className="font-medium ">
                                                 {idx + 1}. {prize.name}
                                             </div>
-                                            <div className="mt-1 text-sm text-gray-600">
+                                            <div className="mt-1 text-sm ">
                                                 Quantity: {prize.quantity}
                                                 {prize.value && (
                                                     <span className="ml-3">
@@ -163,10 +161,10 @@ export default function DetailSection({ raffle }) {
 
                     {/* Created At */}
                     {/* <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt className="text-sm font-medium text-gray-900">
+                        <dt className="text-sm font-medium ">
                             Created At
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-700 sm:col-span-2 sm:mt-0">
+                        <dd className="mt-1 text-sm  sm:col-span-2 sm:mt-0">
                             {raffle?.created_at
                                 ? moment(raffle.created_at).format(
                                       'MMMM DD, YYYY hh:mm A',
