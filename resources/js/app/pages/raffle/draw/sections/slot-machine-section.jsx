@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import store from "@/app/store/store";
 import { get_participants_thunk } from "@/app/redux/participants-thunk";
@@ -11,9 +11,9 @@ const VIEWPORT_CENTER = VIEWPORT_HEIGHT / 2;
 const SCALING_RANGE = TOTAL_ITEM_HEIGHT * 1.5;
 
 /* -----------------------------------------
-    Scaling Item (Enhanced with Thrill Effects)
+    Scaling Item (Enhanced with Dramatic Thrill Effects)
 ----------------------------------------- */
-const ScalingItem = ({ item, itemIndex, listY, isSpinning }) => {
+const ScalingItem = React.memo(({ item, itemIndex, listY, isSpinning, spinPhase }) => {
     const itemCenterOffset =
         itemIndex * TOTAL_ITEM_HEIGHT + TOTAL_ITEM_HEIGHT / 2;
 
@@ -23,36 +23,71 @@ const ScalingItem = ({ item, itemIndex, listY, isSpinning }) => {
         const normalizedDistance = Math.min(distanceFromCenter, SCALING_RANGE);
         const baseScale = 1.2 - 0.2 * (normalizedDistance / SCALING_RANGE);
         
-        // Add extra scaling effect when spinning for more drama
-        return isSpinning ? baseScale * 1.1 : baseScale;
+        // Progressive scaling based on spin phase for maximum drama
+        let phaseMultiplier = 1;
+        if (spinPhase >= 3) { // Slow-motion phases
+            phaseMultiplier = 1.3; // More dramatic scaling
+        } else if (spinPhase >= 1) { // Active spinning
+            phaseMultiplier = 1.15;
+        }
+        
+        return isSpinning ? baseScale * phaseMultiplier : baseScale;
     });
 
-    return (
-        <motion.div
-            style={{
-                width: "90%",
-                height: `${ITEM_HEIGHT}px`,
-                margin: `${MARGIN_VERTICAL}px 5%`,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: isSpinning ? "#2563EB" : "#1F2937",
-                color: "#fff",
-                borderRadius: "12px",
+    // Memoize base styles to reduce recalculation
+    const baseStyles = useMemo(() => ({
+        width: "90%",
+        height: `${ITEM_HEIGHT}px`,
+        margin: `${MARGIN_VERTICAL}px 5%`,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "#fff",
+        borderRadius: "12px",
+        fontWeight: "700",
+        flexShrink: 0,
+        scale,
+    }), [scale]);
+
+    // Get phase-specific styles
+    const getPhaseStyles = useMemo(() => {
+        if (spinPhase >= 4) {
+            return {
+                backgroundColor: "#1E40AF",
+                boxShadow: "0 0 25px rgba(30, 64, 175, 0.8), 0 0 50px rgba(59, 130, 246, 0.4)",
+                border: "2px solid rgba(255, 215, 0, 0.8)",
+                fontSize: "1.5em",
+                textShadow: "0 0 10px rgba(59, 130, 246, 0.8)",
+            };
+        } else if (spinPhase >= 3) {
+            return {
+                backgroundColor: "#2563EB",
+                boxShadow: "0 0 20px rgba(37, 99, 235, 0.6)",
+                border: "1px solid rgba(255, 215, 0, 0.6)",
+                fontSize: "1.45em",
+            };
+        } else if (spinPhase >= 1) {
+            return {
+                backgroundColor: "#3B82F6",
+                boxShadow: "0 0 15px rgba(59, 130, 246, 0.4)",
+                border: "1px solid rgba(255, 215, 0, 0.3)",
                 fontSize: "1.4em",
-                fontWeight: "700",
-                boxShadow: isSpinning 
-                    ? "0 0 10px rgba(37, 99, 235, 0.4)" 
-                    : "0 0 3px rgba(255,255,255,0.1)",
-                flexShrink: 0,
-                scale,
-                border: isSpinning ? "1px solid rgba(255,215,0,0.2)" : "none",
-            }}
-        >
+            };
+        } else {
+            return {
+                backgroundColor: "#1F2937",
+                boxShadow: "0 0 3px rgba(255,255,255,0.1)",
+                fontSize: "1.4em",
+            };
+        }
+    }, [spinPhase]);
+
+    return (
+        <motion.div style={{...baseStyles, ...getPhaseStyles}}>
             {item.attendee_name}
         </motion.div>
     );
-};
+});
 
 /* -----------------------------------------
     Slot Machine Component
@@ -60,13 +95,32 @@ const ScalingItem = ({ item, itemIndex, listY, isSpinning }) => {
 const SlotMachineSection = ({ participants, getWinner }) => {
     const listY = useMotionValue(0);
     const [isSpinning, setIsSpinning] = useState(false);
+    const [spinPhase, setSpinPhase] = useState(0); // 0: idle, 1: fast, 2: medium, 3: slow, 4: ultra-slow, 5: final
     const [winner, setWinner] = useState(null);
     const [duplicatedItems, setDuplicatedItems] = useState([]);
+    const [hasWinner, setHasWinner] = useState(false);
+    const idleAnimationRef = useRef(null);
 
     const spinAudioRef = useRef(null);
     const winAudioRef = useRef(null);
+    const tadaAudioRef = useRef(null);
 
     const LOOP_COUNT = 30;
+
+    // Get CSS class names based on current state
+    const getButtonClass = () => {
+        if (spinPhase >= 4) return 'btn-phase-4';
+        if (spinPhase >= 3) return 'btn-phase-3';
+        if (isSpinning) return 'btn-spinning';
+        return 'btn-idle';
+    };
+
+    const getContainerClass = () => {
+        if (spinPhase >= 4) return 'container-phase-4';
+        if (spinPhase >= 3) return 'container-phase-3';
+        if (isSpinning) return 'container-spinning';
+        return 'container-idle';
+    };
 
     // Initialize duplicated items when participants change
     React.useEffect(() => {
@@ -77,17 +131,55 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         setDuplicatedItems(newDuplicatedItems);
     }, [participants]);
 
+    // Idle animation effect - slow continuous spin when not spinning and no winner
+    React.useEffect(() => {
+        const stopIdleAnimation = () => {
+            if (idleAnimationRef.current) {
+                idleAnimationRef.current.stop();
+                idleAnimationRef.current = null;
+            }
+        };
+
+        const startIdleAnimation = () => {
+            if (!isSpinning && !hasWinner && duplicatedItems.length > 0) {
+                // Create a slow, continuous upward spin movement
+                const currentY = listY.get();
+                
+                idleAnimationRef.current = animate(listY, currentY - 10000, {
+                    duration: 350, 
+                    repeat: Infinity,
+                    ease: "linear",
+                });
+            }
+        };
+
+        // Always stop animation first when spinning or has winner
+        if (isSpinning || hasWinner) {
+            stopIdleAnimation();
+        } else if (duplicatedItems.length > 0) {
+            // Small delay before starting idle animation only when no winner
+            const timeout = setTimeout(startIdleAnimation, 500);
+            return () => {
+                clearTimeout(timeout);
+                stopIdleAnimation();
+            };
+        }
+
+        return stopIdleAnimation;
+    }, [isSpinning, hasWinner, duplicatedItems]);
+
     /* -----------------------------------------
-        SPIN LOGIC (ENHANCED WITH SLOW MOTION & THRILL)
+        SPIN LOGIC (ENHANCED WITH DRAMATIC SLOW MOTION & THRILL)
     ----------------------------------------- */
     const spinToResult = async () => {
         if (isSpinning) return;
         setIsSpinning(true);
-        setWinner(null); // Clear previous winner immediately
+        setSpinPhase(1);
+        setWinner(null);
+        setHasWinner(false); 
 
         await store.dispatch(get_participants_thunk());
 
-        // Update duplicated items with fresh participant data
         const freshDuplicatedItems = Array.from(
             { length: LOOP_COUNT },
             () => participants
@@ -96,59 +188,127 @@ const SlotMachineSection = ({ participants, getWinner }) => {
 
         if (spinAudioRef.current) {
             spinAudioRef.current.currentTime = 0;
-            spinAudioRef.current.play();
+            spinAudioRef.current.loop = true;
+            const playPromise = spinAudioRef.current.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Audio play failed:", error);
+                });
+            }
         }
 
-        // Always reset to the exact same starting position before spinning
-        const startingPosition = 0;  // Start at the very beginning
+        if (idleAnimationRef.current) {
+            idleAnimationRef.current.stop();
+            idleAnimationRef.current = null;
+        }
+        
+        const startingPosition = 0;  
         listY.set(startingPosition);
 
-        const fullLoops = 10; // Increased from 3 to 10 for more loops
+        const fullLoops = 12; // Increased loops for more drama
 
-        // Generate a random stopping position in the duplicated items (after the minimum loops)
         const minIndex = fullLoops * participants.length;
         const maxIndex = freshDuplicatedItems.length - participants.length;
         const randomStopIndex = Math.floor(Math.random() * (maxIndex - minIndex)) + minIndex;
 
-        /* -----------------------------------------------------
-            SIMPLE 2-PHASE: FAST THEN SLOW STOP
-        ------------------------------------------------------ */
         const finalY = -(randomStopIndex * TOTAL_ITEM_HEIGHT - (VIEWPORT_CENTER - TOTAL_ITEM_HEIGHT / 2));
 
-        // Phase 1: Fast spin (4 seconds)
-        await animate(listY, finalY * 0.7, {
-            duration: 5,
+        // Phase 1: Fast initial spin (build excitement)
+        setSpinPhase(1);
+        await animate(listY, finalY * 0.4, {
+            duration: 3,
             ease: "linear",
         });
 
-        // Phase 2: Gradual slow down to stop (4 seconds)
-        await animate(listY, finalY, {
-            duration: 4,
-            ease: [0.25, 0.46, 0.45, 0.94], // Smooth slow down curve
-            onComplete: () => {
-                if (spinAudioRef.current) spinAudioRef.current.pause();
-
-                if (winAudioRef.current) {
-                    winAudioRef.current.currentTime = 0;
-                    winAudioRef.current.play();
-                }
-
-                setIsSpinning(false);
-
-                // Determine the actual winner based on where the slot machine stopped
-                const actualWinningObject = freshDuplicatedItems[randomStopIndex];
-
-                // Call getWinner callback with the actual winner
-                if (getWinner) getWinner(actualWinningObject);
-
-                // Show the winner modal with dramatic delay
-                setTimeout(() => {
-                    setWinner(actualWinningObject);
-                }, 1000); // Increased delay for more suspense
-
-                // No reset needed - the next spin will handle positioning
-            },
+        // Phase 2: Medium speed with slight deceleration (building tension)
+        setSpinPhase(2);
+        await animate(listY, finalY * 0.75, {
+            duration: 3.5,
+            ease: [0.2, 0, 0.8, 1],
         });
+
+        // Phase 3: Dramatic slow-motion approach (maximum thrill)
+        setSpinPhase(3);
+        // Slow down audio for dramatic effect
+        if (spinAudioRef.current) {
+            spinAudioRef.current.playbackRate = 0.7;
+        }
+        await animate(listY, finalY * 0.95, {
+            duration: 4.5,
+            ease: [0.4, 0, 0.6, 1],
+        });
+
+        // Phase 4: Ultra slow-motion final selection (heart-stopping moment)
+        setSpinPhase(4);
+        // Even slower audio for maximum tension
+        if (spinAudioRef.current) {
+            spinAudioRef.current.playbackRate = 0.4;
+        }
+        await animate(listY, finalY, {
+            duration: 7,
+            ease: [0.08, 0.82, 0.17, 1], // Very dramatic ease-out
+        });
+
+        // Phase 5: Final positioning
+        setSpinPhase(5);
+        // Stop audio for dramatic silence
+        if (spinAudioRef.current) {
+            spinAudioRef.current.pause();
+        }
+        
+        // Tiny bounce back for dramatic effect
+        await animate(listY, finalY + TOTAL_ITEM_HEIGHT * 0.15, {
+            duration: 0.4,
+            ease: "easeOut",
+        });
+
+        // Final settle into position
+        await animate(listY, finalY, {
+            duration: 1.2,
+            ease: [0.25, 0.46, 0.45, 0.94],
+        });
+
+        // Play tada sound when slot machine stops
+        if (tadaAudioRef.current) {
+            tadaAudioRef.current.volume = 1.0; // Maximum volume
+            tadaAudioRef.current.currentTime = 0;
+            tadaAudioRef.current.play().catch(error => {
+                console.log("Tada audio play failed:", error);
+            });
+        }
+
+        setIsSpinning(false);
+        setSpinPhase(0);
+        
+        // Mark that we have a winner to stop all animations
+        setHasWinner(true);
+
+        const actualWinningObject = freshDuplicatedItems[randomStopIndex];
+
+        if (getWinner) getWinner(actualWinningObject);
+
+        // Reset audio playback rate
+        if (spinAudioRef.current) {
+            spinAudioRef.current.playbackRate = 1.0;
+        }
+
+        // Stop any idle animation immediately when winner is selected
+        if (idleAnimationRef.current) {
+            idleAnimationRef.current.stop();
+            idleAnimationRef.current = null;
+        }
+
+        // Wait 3 seconds before showing the winner modal for more dramatic pause
+        setTimeout(() => {
+            if (winAudioRef.current) {
+                winAudioRef.current.currentTime = 0;
+                winAudioRef.current.play();
+            }
+            
+            setWinner(actualWinningObject);
+        }, 3000); 
+
     };
 
     return (
@@ -218,6 +378,33 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                         75% { transform: translateX(5px); }
                     }
 
+                    @keyframes dramaticPulse {
+                        0%, 100% { 
+                            transform: scale(1);
+                            box-shadow: 0 0 20px rgba(30, 64, 175, 0.8);
+                        }
+                        50% { 
+                            transform: scale(1.08);
+                            box-shadow: 0 0 60px rgba(30, 64, 175, 1), 0 0 100px rgba(59, 130, 246, 0.6);
+                        }
+                    }
+
+                    @keyframes slowMotionGlow {
+                        0%, 100% { 
+                            filter: brightness(1) contrast(1);
+                        }
+                        50% { 
+                            filter: brightness(1.3) contrast(1.2);
+                        }
+                    }
+
+                    @keyframes finalMomentShake {
+                        0%, 100% { transform: translateY(0) scale(1); }
+                        25% { transform: translateY(-2px) scale(1.02); }
+                        50% { transform: translateY(0) scale(1.05); }
+                        75% { transform: translateY(-1px) scale(1.02); }
+                    }
+
                     .winner-modal-fade {
                         animation: fadeIn 0.3s ease-out;
                     }
@@ -246,16 +433,113 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                     .spinning-pulse {
                         animation: pulse 2s infinite;
                     }
+
+                    /* Button styles for better performance */
+                    .btn-base {
+                        padding: 20px 40px;
+                        font-weight: bold;
+                        border-radius: 15px;
+                        margin-top: 20px;
+                        transition: all 0.15s ease;
+                    }
+
+                    .btn-idle {
+                        font-size: 1.5em;
+                        border: 3px solid #FFD700;
+                        background-color: #1E3A8A;
+                        color: #FFD700;
+                        cursor: pointer;
+                        box-shadow: 0 0 15px rgba(255,215,0,0.9);
+                        transform: scale(1);
+                    }
+
+                    .btn-spinning {
+                        font-size: 1.8em;
+                        border: 4px solid #3b82f6;
+                        background-color: #3B82F6;
+                        color: #e0f2fe;
+                        cursor: not-allowed;
+                        box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 50px rgba(59, 130, 246, 0.6);
+                        text-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+                        transform: scale(1.1);
+                    }
+
+                    .btn-phase-3 {
+                        font-size: 2em;
+                        border: 4px solid #2563EB;
+                        background-color: #2563EB;
+                        color: #e0f2fe;
+                        cursor: not-allowed;
+                        box-shadow: 0 0 50px rgba(37, 99, 235, 0.8), 0 0 80px rgba(59, 130, 246, 0.6);
+                        text-shadow: 0 0 12px rgba(37, 99, 235, 0.8);
+                        transform: scale(1.15);
+                    }
+
+                    .btn-phase-4 {
+                        font-size: 2.2em;
+                        border: 5px solid #1E40AF;
+                        background-color: #1E40AF;
+                        color: #e0f2fe;
+                        cursor: not-allowed;
+                        box-shadow: 0 0 60px rgba(30, 64, 175, 1), 0 0 100px rgba(59, 130, 246, 0.8);
+                        text-shadow: 0 0 15px rgba(30, 64, 175, 0.8);
+                        transform: scale(1.2);
+                        animation: dramaticPulse 0.8s infinite;
+                    }
+
+                    /* Container styles for better performance */
+                    .container-base {
+                        width: 320px;
+                        height: ${VIEWPORT_HEIGHT}px;
+                        overflow: hidden;
+                        margin: 50px auto;
+                        border-radius: 24px;
+                        background-color: #000;
+                        position: relative;
+                        transition: all 0.15s ease;
+                    }
+
+                    .container-idle {
+                        border: 4px solid #FFD700;
+                        box-shadow: 0 0 20px rgba(255,215,0,0.6);
+                        transform: scale(1);
+                    }
+
+                    .container-spinning {
+                        border: 5px solid #3b82f6;
+                        box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+                        transform: scale(1);
+                    }
+
+                    .container-phase-3 {
+                        border: 5px solid #2563EB;
+                        box-shadow: 0 0 40px rgba(37, 99, 235, 0.8), 0 0 80px rgba(59, 130, 246, 0.4);
+                        transform: scale(1.02);
+                    }
+
+                    .container-phase-4 {
+                        border: 6px solid #1E40AF;
+                        box-shadow: 0 0 50px rgba(30, 64, 175, 1), 0 0 100px rgba(59, 130, 246, 0.5);
+                        transform: scale(1.05);
+                    }
                 `}
             </style>
             <div
                 style={{
                     textAlign: "center",
                     fontFamily: "sans-serif",
-                    backgroundColor: isSpinning ? "#0F0F0F" : "#111",
+                    backgroundColor: spinPhase >= 4 
+                        ? "#0A0A0A" 
+                        : spinPhase >= 3 
+                            ? "#0D0D0D"
+                            : isSpinning 
+                                ? "#0F0F0F" 
+                                : "#111",
                     minHeight: "100vh",
                     paddingTop: "50px",
                     transition: "background-color 0.5s ease",
+                    animation: spinPhase >= 4 ? "finalMomentShake 0.3s infinite" : "none",
+                    filter: spinPhase >= 3 ? "brightness(1.1) contrast(1.1)" : "none",
                 }}
             >
                 {/* Minimal Spinning Overlay Effects */}
@@ -271,26 +555,25 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                     </div>
                 )}
                 {/* Audio */}
-                <audio ref={spinAudioRef} src="/mp3/spin.wav" loop />
-                <audio ref={winAudioRef} src="/mp3/win.wav" />
+                <audio 
+                    ref={spinAudioRef} 
+                    src="/mp3/1209.WAV" 
+                    loop 
+                    preload="auto"
+                    onEnded={() => {
+                        // Ensure seamless looping
+                        if (isSpinning && spinAudioRef.current) {
+                            spinAudioRef.current.currentTime = 0;
+                            spinAudioRef.current.play();
+                        }
+                    }}
+                />
+                <audio ref={winAudioRef} src="/mp3/win.wav" preload="auto" />
+                <audio ref={tadaAudioRef} src="/mp3/tada.wav" preload="auto" volume="9.0" />
 
                 {/* Slot Machine Viewport */}
                 <div
-                    className={`${isSpinning ? 'spinning-glow' : ''}`}
-                    style={{
-                        width: "320px",
-                        height: `${VIEWPORT_HEIGHT}px`,
-                        overflow: "hidden",
-                        margin: "50px auto",
-                        borderRadius: "24px",
-                        backgroundColor: "#000",
-                        border: isSpinning ? "5px solid #3b82f6" : "4px solid #FFD700",
-                        boxShadow: isSpinning 
-                            ? "0 0 30px rgba(59, 130, 246, 0.8)" 
-                            : "0 0 20px rgba(255,215,0,0.6)",
-                        position: "relative",
-                        transition: "border 0.2s ease, box-shadow 0.2s ease",
-                    }}
+                    className={`container-base ${getContainerClass()} ${isSpinning ? 'spinning-glow' : ''}`}
                 >
                     <motion.div
                         style={{
@@ -309,6 +592,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                 itemIndex={idx}
                                 listY={listY}
                                 isSpinning={isSpinning}
+                                spinPhase={spinPhase}
                             />
                         ))}
                     </motion.div>
@@ -364,24 +648,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                 <button
                     onClick={spinToResult}
                     disabled={isSpinning}
-                    className={isSpinning ? 'spinning-pulse' : ''}
-                    style={{
-                        padding: "20px 40px",
-                        fontSize: isSpinning ? "1.8em" : "1.5em",
-                        fontWeight: "bold",
-                        borderRadius: "15px",
-                        border: isSpinning ? "4px solid #3b82f6" : "3px solid #FFD700",
-                        backgroundColor: isSpinning ? "#2563eb" : "#1E3A8A",
-                        color: isSpinning ? "#e0f2fe" : "#FFD700",
-                        cursor: isSpinning ? "not-allowed" : "pointer",
-                        boxShadow: isSpinning
-                            ? "0 0 30px rgba(59, 130, 246, 0.8), 0 0 50px rgba(37, 99, 235, 0.6)"
-                            : "0 0 15px rgba(255,215,0,0.9)",
-                        marginTop: "20px",
-                        transition: "all 0.3s ease",
-                        textShadow: isSpinning ? "0 0 10px rgba(59, 130, 246, 0.8)" : "none",
-                        transform: isSpinning ? "scale(1.1)" : "scale(1)",
-                    }}
+                    className={`btn-base ${getButtonClass()} ${isSpinning ? 'spinning-pulse' : ''}`}
                 >
                     {isSpinning ? "🎰 SPINNING... 🎰" : "🎯 SPIN THE SLOT MACHINE! 🎯"}
                 </button>
@@ -420,7 +687,21 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                         {/* Winner Card */}
                         <div className="relative bg-gradient-to-br from-yellow-400 via-yellow-300 to-orange-400 rounded-3xl shadow-2xl max-w-4xl w-full mx-8 overflow-hidden animate-scaleIn">
                             <button
-                                onClick={() => setWinner(null)}
+                                onClick={() => {
+                                    setWinner(null);
+                                    setHasWinner(false);
+                                    // Restart idle animation after closing modal
+                                    setTimeout(() => {
+                                        if (!isSpinning && duplicatedItems.length > 0) {
+                                            const currentY = listY.get();
+                                            idleAnimationRef.current = animate(listY, currentY - 10000, {
+                                                duration: 350, 
+                                                repeat: Infinity,
+                                                ease: "linear",
+                                            });
+                                        }
+                                    }, 100);
+                                }}
                                 className="absolute top-6 right-6 bg-white hover:bg-gray-100 rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all transform hover:scale-110 z-10"
                             >
                                 <svg

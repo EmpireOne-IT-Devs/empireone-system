@@ -68,11 +68,11 @@ const HeaderSection = () => {
                 <div className="space-y-8 text-center">
                     <div className="inline-block animate-bounce">
                         <img
-                            src="/images/empireone.png-removebg-preview.png"
+                            src="/images/newlogo.png"
                             alt="Slot Machine"
-                            className="mb-2 w-40 h-40  drop-shadow-2xl"
+                            className="mb-2 w-40 h-12 drop-shadow-2xl"
                             style={{
-                                filter: 'drop-shadow(0 0 20px rgba(255, 215, 0, 0.5))',
+                                filter: 'drop-shadow(0 0 20px rgba(0, 191, 255, 0.8))',
                             }}
                         />
                     </div>
@@ -87,7 +87,7 @@ const HeaderSection = () => {
                             }}
                         >
                             <span className="bg-gradient-to-r from-yellow-200 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                                <strong>Empire One</strong>
+                                <strong>EmpireOne</strong>
                             </span>
                         </h1>
                         <h2
