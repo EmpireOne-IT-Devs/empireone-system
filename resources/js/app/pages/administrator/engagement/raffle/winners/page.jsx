@@ -1,25 +1,33 @@
-import {
-    get_accounting_cash_flows_thunk,
-    get_daily_expenses_thunk,
-} from '@/app/redux/accounting-thunk';
-import store from '@/app/store/store';
-import { useEffect } from 'react';
+import { Head } from '@inertiajs/react';
 import Layout from '../../../layout';
+import TabsSection from '../id/_sections/tabs_section';
 import TableSection from './_sections/table-section';
+import PaginationSection from './_sections/pagination_section';
 
+export default function Page({ raffle }) {
+    const breadcrumbs = [
+        {
+            title: 'Raffle',
+            href: '/administrator/engagement/raffle',
+        },
+        {
+            title: raffle?.event_name || 'Event',
+            href: `/administrator/engagement/raffle/${raffle?.id}`,
+        },
+        {
+            title: 'Winners',
+            href: '#',
+        },
+    ];
 
-
-
-export default function Page() {
-    useEffect(() => {
-        store.dispatch(get_daily_expenses_thunk());
-        store.dispatch(get_accounting_cash_flows_thunk());
-    }, []);
     return (
-        <Layout>
-            {/* <ExpensesLayout> */}
-                <TableSection/>
-            {/* </ExpensesLayout> */}
+        <Layout breadcrumbs={breadcrumbs}>
+            <Head title={`Winners - ${raffle?.event_name || 'Raffle'}`} />
+            <div className="space-y-6">
+                <TabsSection raffleId={raffle?.id} />
+                <TableSection raffle={raffle} />
+                <PaginationSection />
+            </div>
         </Layout>
     );
 }

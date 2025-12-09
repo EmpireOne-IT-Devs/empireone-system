@@ -48,6 +48,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 Route::get('/registration', function () {
                     return Inertia::render('administrator/engagement/raffle/portal/registration/page');
                 });
+                Route::get('detail_section', function () {
+                    return Inertia::render('administrator/engagement/raffle/detail_section/page');
+                });
+                Route::get('participants', function () {
+                    return Inertia::render('administrator/engagement/raffle/participants/page');
+                });
+                Route::get('winners', function () {
+                    return Inertia::render('administrator/engagement/raffle/winners/page');
+                });
             });
         });
 

@@ -1,7 +1,6 @@
 import { Head } from '@inertiajs/react';
 import Layout from '../../../layout';
 import DetailSection from './_sections/detail_section';
-import { usePage } from '@inertiajs/react';
 
 
 const staticData = [
@@ -113,12 +112,10 @@ const staticData = [
     },
 ];
 
-export default function Page({ params }) {
-    
-    const raffleId = params?.id || 1; // Default to 1 if no ID
-    
-    
-    const raffle = staticData.find(r => r.id === parseInt(raffleId));
+export default function Page() {
+    // Get raffle ID from URL - you'll need to configure this based on your routing
+    const raffleId = 1; // For now, default to 1
+    const raffle = staticData.find(r => r.id === raffleId) || staticData[0];
     
     const breadcrumbs = [
         {

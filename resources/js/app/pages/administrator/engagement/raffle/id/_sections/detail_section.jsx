@@ -4,17 +4,18 @@ import TabsSection from './tabs_section';
 export default function DetailSection({ raffle }) {
     return (
         <div className="overflow-hidden shadow-sm sm:rounded-lg">
+            <div className="mb-4">
+                <TabsSection raffleId={raffle?.id} />
+            </div>
+            
             <div className="flex justify-between px-4 py-6 sm:px-6">
                 <div className="items-start">
-                    <h3 className="text-base font-semibold ">
+                    <h3 className="text-base font-semibold">
                         Event Information
                     </h3>
-                    <p className="mt-1 max-w-2xl text-sm ">
+                    <p className="mt-1 max-w-2xl text-sm">
                         Details and description of the event.
                     </p>
-                </div>
-                <div>
-                    <TabsSection />
                 </div>
             </div>
 
