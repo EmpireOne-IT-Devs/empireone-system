@@ -1,3 +1,4 @@
+import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import {
@@ -208,7 +209,7 @@ export default function TableSection() {
                         placeholder="Search by name, description or date..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        className="w-64 h-10 max-w-lg"
+                        className="h-10 w-64 max-w-lg"
                     />
                     <div className="flex items-center gap-3">
                         <ResetSection />
@@ -303,6 +304,12 @@ export default function TableSection() {
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-3">
+                                        <Link
+                                            className="rounded-lg bg-red-700 p-3 text-xs font-semibold text-white transition hover:bg-red-800"
+                                            href={`/administrator/engagement/raffle/id_ni_sya/home`}
+                                        >
+                                            PORTAL
+                                        </Link>
                                         <ViewSection raffle={u} />
                                         <EditSection />
                                     </div>

@@ -38,6 +38,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('raffle/{id}', function () {
                 return Inertia::render('administrator/engagement/raffle/id/page');
             });
+            Route::prefix('raffle/{id}')->group(function () {
+                Route::get('/home', function () {
+                    return Inertia::render('administrator/engagement/raffle/portal/home/page');
+                });
+                Route::get('/draw', function () {
+                    return Inertia::render('administrator/engagement/raffle/portal/draw/page');
+                });
+                Route::get('/registration', function () {
+                    return Inertia::render('administrator/engagement/raffle/portal/registration/page');
+                });
+            });
         });
 
         Route::get('users/users1', function () {
