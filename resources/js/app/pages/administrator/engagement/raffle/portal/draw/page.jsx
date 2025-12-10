@@ -6,8 +6,7 @@ import HeaderSection from "./sections/header-section";
 import WheelSection from "./sections/wheel-section";
 import WinnersSection from "./sections/winners-section";
 import store from "@/app/store/store";
-import { get_participants_thunk } from "@/app/redux/participants-thunk";
-import { get_winners_thunk } from "@/app/redux/winner-thunk";
+import { get_participants_thunk,get_winners_thunk } from "@/app/redux/raffle-thunk";
 
 const Page = () => {
     useEffect(() => {

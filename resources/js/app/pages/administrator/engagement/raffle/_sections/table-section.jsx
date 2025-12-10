@@ -19,6 +19,7 @@ import CreateSection from './create-section';
 import EditSection from './edit_section';
 import ResetSection from './reset_section';
 import ViewSection from './view_section';
+import { Link } from '@inertiajs/react';
 
 const initialData = [
     {
@@ -303,6 +304,12 @@ export default function TableSection() {
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-3">
+                                         <Link
+                                            className="rounded-lg bg-red-700 p-3 text-xs font-semibold text-white transition hover:bg-red-800"
+                                            href={`/administrator/engagement/raffle/id_ni_sya/home`}
+                                        >
+                                            PORTAL
+                                        </Link>
                                         <ViewSection raffle={u} />
                                         <EditSection />
                                     </div>

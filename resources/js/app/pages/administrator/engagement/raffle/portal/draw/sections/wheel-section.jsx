@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { create_winners_service } from "@/app/services/winners-service";
 import store from "@/app/store/store";
-import { get_winners_thunk } from "@/app/redux/winner-thunk";
+import { get_winners_thunk } from "@/app/redux/raffle-thunk";
 import SlotMachineSection from "./slot-machine-section";
 
 const WheelSection = () => {
