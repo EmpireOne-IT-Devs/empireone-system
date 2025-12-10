@@ -6,7 +6,7 @@ import RegistrationFormSection from "./sections/registration-form-section";
 import QRScannerSection from "./sections/qr-scanner-section";
 import ParticipantsListSection from "./sections/participants-list-section";
 import store from "@/app/store/store";
-import { get_participants_thunk } from "@/app/redux/participants-thunk";
+import { get_participants_thunk } from "@/app/redux/raffle-thunk";
 
 const Page = () => {
     useEffect(() => {
