@@ -7,14 +7,14 @@ const ActionCards = () => {
             title: 'Registration',
             description: 'Register participants and scan QR codes for raffle entry',
             icon: '📋',
-            path:`/administrator/engagement/raffle/id_ni_sya/registration`,
+            path:`/administrator/engagement/raffle/${window.location.pathname.split('/')[4]}/registration`,
             gradient: 'from-blue-500 to-blue-600',
         },
         {
             title: 'Raffle Draw',
             description: 'Spin the roulette wheel and select lucky winners',
             icon: '🎰',
-            path: `/administrator/engagement/raffle/id_ni_sya/draw`,
+            path: `/administrator/engagement/raffle/${window.location.pathname.split('/')[4]}/draw`,
             gradient: 'from-blue-600 to-blue-700',
         }
     ];

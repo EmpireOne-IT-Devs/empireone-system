@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class RaffleParticipant extends Model
 {
     protected $fillable = [
-        'raffle_id',
-        'attendee_name',
-        'contact_number',
+        'raffle_event_id',
+        'name',
+        'contact',
         'email',
         'qr_code_data',
         'is_winner',

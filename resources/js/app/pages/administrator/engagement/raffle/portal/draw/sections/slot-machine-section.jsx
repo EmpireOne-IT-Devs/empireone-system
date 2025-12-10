@@ -84,7 +84,7 @@ const ScalingItem = React.memo(({ item, itemIndex, listY, isSpinning, spinPhase 
 
     return (
         <motion.div style={{...baseStyles, ...getPhaseStyles}}>
-            {item.attendee_name}
+            {item.name}
         </motion.div>
     );
 });
@@ -732,7 +732,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
 
                                 <div className="bg-white rounded-2xl p-8 shadow-2xl animate-pulse">
                                     <p className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 via-red-600 to-yellow-600">
-                                        {winner.attendee_name}
+                                        {winner.name}
                                     </p>
                                 </div>
 
@@ -741,9 +741,9 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                         📧 {winner.email}
                                     </p>
                                 )}
-                                {winner.contact_number && (
+                                {winner.contact && (
                                     <p className="text-2xl text-gray-700 font-semibold">
-                                        📱 {winner.contact_number}
+                                        📱 {winner.contact}
                                     </p>
                                 )}
                             </div>

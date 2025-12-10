@@ -67,7 +67,7 @@ const HeaderSection = () => {
                     {/* Right Section - Back Button */}
                     <div>
                         <Link
-                            href={`/administrator/engagement/raffle/id_ni_sya/home`}
+                            href={`/administrator/engagement/raffle/${window.location.pathname.split('/')[4]}/home`}
                             className="group relative flex transform items-center space-x-3 rounded-2xl border-2 border-white/30 bg-white/20 px-8 py-4 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 hover:border-white/50 hover:bg-white/30 hover:shadow-2xl"
                         >
                             <div className="rounded-full bg-white/20 p-2 transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">

@@ -79,7 +79,7 @@ const WinnersSection = () => {
                                         <div className="flex items-center space-x-2">
                                             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                                             <p className="font-black text-gray-800 text-lg">
-                                                {winner.participant?.attendee_name || 'Unknown'}
+                                                {winner.participant?.name || 'Unknown'}
                                             </p>
                                         </div>
                                         

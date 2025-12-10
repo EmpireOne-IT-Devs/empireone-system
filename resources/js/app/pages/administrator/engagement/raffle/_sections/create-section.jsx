@@ -17,6 +17,7 @@ export default function CreateSection() {
         handleSubmit,
         watch,
         setError,
+        isSubmitting,
         formState: { errors },
     } = useForm({
         defaultValues: {
@@ -198,7 +199,11 @@ export default function CreateSection() {
                         </div>
 
                         <div className="flex justify-end gap-3 border-t pt-4">
-                            <Button variant="primary" type="submit">
+                            <Button
+                                loading={isSubmitting}
+                                variant="primary"
+                                type="submit"
+                            >
                                 Save Event
                             </Button>
                         </div>

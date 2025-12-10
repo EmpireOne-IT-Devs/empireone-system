@@ -11,7 +11,7 @@ export function create_participant_service(data) {
 
 export function get_participants_service() {
     try {
-        const result = axios.get("/api/participants");
+        const result = axios.get("/api/participants?raffle_event_id=" + window.location.pathname.split('/')[4]);
         return result;
     } catch (error) {
         return error;

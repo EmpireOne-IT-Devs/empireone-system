@@ -182,7 +182,7 @@ export default function TableSection() {
                                         >
                                             PORTAL
                                         </a>
-                                        <ViewSection raffle={u} />
+                                        <ViewSection data={u} />
                                         <EditSection />
                                     </div>
                                 </TableCell>

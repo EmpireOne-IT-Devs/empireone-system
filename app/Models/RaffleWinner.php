@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class RaffleWinner extends Model
 {
     protected $fillable = [
-        'raffle_id',
+        'raffle_event_id',
         'winner_id',
-        'prize_name',
         'drawn_at'
     ];
 
@@ -18,7 +17,7 @@ class RaffleWinner extends Model
     ];
     public function raffle()
     {
-        return $this->belongsTo(Raffle::class);
+        return $this->belongsTo(RaffleEvent::class);
     }
 
     public function participant()

@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('raffle_participants', function (Blueprint $table) {
             $table->id();
             $table->string('raffle_event_id')->nullable();
-            $table->foreignId('raffle_id')->constrained()->onDelete('cascade');
-            $table->string('attendee_name');
-            $table->string('contact_number');
+            $table->string('name');
+            $table->string('contact');
             $table->string('email')->unique();
             $table->string('qr_code_data')->unique();
             $table->boolean('is_winner')->default(false);

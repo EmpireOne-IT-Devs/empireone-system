@@ -8,9 +8,11 @@ use Illuminate\Support\Str;
 
 class RaffleParticipantController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $participants = RaffleParticipant::orderBy('created_at', 'desc')
+            ->where('is_winner', 0)
+            ->where('raffle_event_id', $request->query('raffle_event_id'))
             ->get();
 
         return response()->json($participants);
@@ -18,18 +20,18 @@ class RaffleParticipantController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'attendee_name' => 'required|string|max:255',
-            'contact_number' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255',
+            'contact' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
-            'raffle_id' => 'nullable|exists:raffles,id'
+            'raffle_event_id' => 'nullable|exists:raffle_events,id'
         ]);
 
         $qrData = Str::uuid()->toString();
 
         RaffleParticipant::create([
-            'raffle_id' => $validated['raffle_id'] ?? 1,
-            'attendee_name' => $validated['attendee_name'],
-            'contact_number' => $validated['contact_number'] ?? null,
+            'raffle_event_id' => $validated['raffle_event_id'] ?? 1,
+            'name' => $validated['name'],
+            'contact' => $validated['contact'] ?? null,
             'email' => $validated['email'] ?? null,
             'qr_code_data' => $qrData,
             'scanned_at' => now(),

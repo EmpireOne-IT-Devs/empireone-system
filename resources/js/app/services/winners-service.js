@@ -11,7 +11,7 @@ export function create_winners_service(data) {
 
 export function get_winners_service() {
     try {
-        const result = axios.get("/api/winners");
+        const result = axios.get(`/api/winners?raffle_event_id=${window.location.pathname.split('/')[4]}`);
         return result;
     } catch (error) {
         return error;

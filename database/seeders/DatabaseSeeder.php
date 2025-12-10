@@ -133,7 +133,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         // Create 300 participants
-        for ($i = 1; $i <= 300; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             $firstName = $firstNames[array_rand($firstNames)];
             $lastName = $lastNames[array_rand($lastNames)];
             $fullName = $firstName . ' ' . $lastName;
@@ -141,9 +141,9 @@ class DatabaseSeeder extends Seeder
             $contactNumber = '+639' . rand(100000000, 999999999);
 
             RaffleParticipant::create([
-                'raffle_id' => 1,
-                'attendee_name' => $fullName,
-                'contact_number' => $contactNumber,
+                'raffle_event_id' => 1,
+                'name' => $fullName,
+                'contact' => $contactNumber,
                 'email' => $email,
                 'qr_code_data' => 'QR_CODE_' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'is_winner' => false,

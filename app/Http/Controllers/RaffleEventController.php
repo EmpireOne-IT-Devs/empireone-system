@@ -13,6 +13,12 @@ class RaffleEventController extends Controller
         $events = RaffleEvent::orderBy('created_at', 'desc')->get();
         return response()->json($events);
     }
+
+    public function show($id)
+    {
+        $event = RaffleEvent::where('id', $id)->with(['participants','winners'])->first();
+        return response()->json($event);
+    }
     public function store(Request $request)
     {
         $raffle = RaffleEvent::create($request->all());

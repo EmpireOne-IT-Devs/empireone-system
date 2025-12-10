@@ -9,11 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class RaffleWinnerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $winners = RaffleWinner::with(['participant', 'raffle'])
-            ->orderBy('drawn_at', 'desc')
-            ->get();
+        $winners = RaffleWinner::where('raffle_event_id', $request->query('raffle_event_id'))
+            ->with(['participant'])->get();
 
         return response()->json($winners);
     }
@@ -25,8 +24,8 @@ class RaffleWinnerController extends Controller
     {
         $validated = $request->validate([
             'participant_id' => 'required|exists:raffle_participants,id',
-            'prize_name' => 'nullable|string|max:255',
-            'raffle_id' => 'nullable|exists:raffles,id'
+            'name' => 'nullable|string|max:255',
+            'raffle_event_id' => 'nullable|exists:raffle_events,id'
         ]);
 
         $participant = RaffleParticipant::findOrFail($validated['participant_id']);
@@ -42,18 +41,12 @@ class RaffleWinnerController extends Controller
         DB::beginTransaction();
 
         try {
-            // Mark participant as winner
             $participant->update(['is_winner' => true]);
-
-            // Create winner record
             $winner = RaffleWinner::create([
-                'raffle_id' => $validated['raffle_id'] ?? $participant->raffle_id,
+                'raffle_event_id' => $validated['raffle_event_id'],
                 'winner_id' => $validated['participant_id'],
-                'prize_name' => $validated['prize_name'] ?? 'Grand Prize',
                 'drawn_at' => now(),
             ]);
-
-            DB::commit();
 
             return response()->json([
                 'success' => true,
@@ -61,8 +54,6 @@ class RaffleWinnerController extends Controller
                 'winner' => $winner->load(['participant', 'raffle'])
             ], 201);
         } catch (\Exception $e) {
-            DB::rollBack();
-
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to record winner: ' . $e->getMessage()

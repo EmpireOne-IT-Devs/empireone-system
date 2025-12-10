@@ -19,7 +19,10 @@ const RegistrationFormSection = () => {
 
     async function submit_data(data) {
         try {
-            await create_participant_service(data);
+            await create_participant_service({
+                ...data,
+                raffle_event_id: window.location.pathname.split('/')[4],
+            });
             await  store.dispatch(get_participants_thunk());
             reset();
             SwalAlert({
@@ -111,12 +114,12 @@ const RegistrationFormSection = () => {
                 >
                     {/* <ParticipantForm onRegister={onRegisterSuccess} /> */}
                     <Input
-                        register={register("attendee_name", {
+                        register={register("name", {
                             required: "This field is required",
                         })}
-                        error={errors?.attendee_name?.message}
+                        error={errors?.name?.message}
                         label="Name"
-                        name="attendee_name"
+                        name="name"
                         type="text"
                     />
                     <Input
@@ -133,16 +136,16 @@ const RegistrationFormSection = () => {
                         type="text"
                     />
                     <Input
-                        register={register("contact_number", {
+                        register={register("contact", {
                             required: "This field is required",
                             pattern: {
                                 value: /^[0-9]{11}$/,
                                 message: "Invalid contact number",
                             },
                         })}
-                        error={errors?.contact_number?.message}
+                        error={errors?.contact?.message}
                         label="Contact"
-                        name="contact_number"
+                        name="contact"
                         type="text"
                     />
                     <Button

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const StatsSection = () => {
     const dispatch = useDispatch();
-    // const { participants, winners } = useSelector((state) => state.raffle);
+    const { events } = useSelector((state) => state.raffles);
     // const [raffleCount, setRaffleCount] = useState(0);
 
     // useEffect(() => {
@@ -12,13 +12,11 @@ const StatsSection = () => {
     //     dispatch(fetchWinners());
     // }, [dispatch]);
 
-    const participants = [];
     const  raffleCount = 0;
-    const winners = [];
     const stats = [
         {
             label: 'Total Participants',
-            value: participants?.length,
+            value: events.participants?.length,
             icon: '👥',
             gradient: 'from-blue-500 to-blue-600',
             bgGradient: 'from-blue-50 to-blue-100',
@@ -38,7 +36,7 @@ const StatsSection = () => {
         },
         {
             label: 'Winners Drawn',
-            value: winners.length,
+            value: events?.winners?.length,
             icon: '🏆',
             gradient: 'from-yellow-500 to-orange-500',
             bgGradient: 'from-yellow-50 to-orange-100',
