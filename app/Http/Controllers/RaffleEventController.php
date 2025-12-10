@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class RaffleEventController extends Controller
 {
+    public function index()
+    {
+        $events = RaffleEvent::orderBy('created_at', 'desc')->get();
+        return response()->json($events);
+    }
     public function store(Request $request)
     {
         $raffle = RaffleEvent::create($request->all());

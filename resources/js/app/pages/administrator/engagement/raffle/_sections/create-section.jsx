@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-
 import Button from '../../../../../_components/button';
 import Modal from '../../../../../_components/modal';
-import  SwalAlert  from '../../../../../_components/swal';
+import SwalAlert from '../../../../../_components/swal';
 import { Input } from '../../../../../components/input';
 import Textarea from '../../../../../components/textarea';
+import { get_events_thunk } from '../../../../../redux/raffle-thunk';
 import { create_event_service } from '../../../../../services/events-service';
+import store from '../../../../../store/store';
 export default function CreateSection() {
     const [showModal, setShowModal] = useState(false);
 
@@ -55,6 +56,7 @@ export default function CreateSection() {
 
         try {
             await create_event_service(eventData);
+            await store.dispatch(get_events_thunk());
             await SwalAlert({
                 type: 'success',
                 title: 'Event created successfully',
