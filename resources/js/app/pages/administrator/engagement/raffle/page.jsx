@@ -1,7 +1,7 @@
 import { Head } from '@inertiajs/react';
 import Layout from '../../layout';
 
-import TableSection from './_sections/table_section';
+import TableSection from './_sections/table-section';
 
 export default function Page() {
     const breadcrumbs = [

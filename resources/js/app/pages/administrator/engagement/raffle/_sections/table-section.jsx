@@ -16,9 +16,9 @@ import {
     TableRow,
 } from '../../../../../components/table';
 import CreateSection from './create-section';
-import EditSection from './edit_section';
-import ResetSection from './reset_section';
-import ViewSection from './view_section';
+import EditSection from './edit-section';
+import ResetSection from './reset-section';
+import ViewSection from './view-section';
 import { Link } from '@inertiajs/react';
 
 const initialData = [
