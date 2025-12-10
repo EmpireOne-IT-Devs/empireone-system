@@ -1,8 +1,8 @@
 import { Head } from '@inertiajs/react';
 import Layout from '../../../layout';
-import TabsSection from '../id/_sections/tabs_section';
+import TabsSection from '../id/_sections/tabs-section';
 import TableSection from './_sections/table-section';
-import PaginationSection from './_sections/pagination_section';
+import PaginationSection from './_sections/pagination-section';
 
 export default function Page({ raffle }) {
     const breadcrumbs = [

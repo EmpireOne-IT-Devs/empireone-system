@@ -4,6 +4,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { Link } from "@inertiajs/react";
 
+
 export default function Pagination({ data }) {
     const queryParams = new URLSearchParams(window.location.search);
     const currentPage = data?.current_page;

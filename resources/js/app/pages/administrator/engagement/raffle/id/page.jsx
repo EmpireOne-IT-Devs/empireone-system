@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
 import Layout from '../../../layout';
-import DetailSection from './_sections/detail_section';
+import DetailSection from './_sections/detail-section';
 
 
 const staticData = [
