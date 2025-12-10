@@ -1,5 +1,5 @@
 import moment from 'moment';
-import TabsSection from './tabs_section';
+import TabsSection from './tabs-section';
 
 export default function DetailSection({ raffle }) {
     return (
