@@ -3,9 +3,10 @@ import { useFieldArray, useForm } from 'react-hook-form';
 
 import Button from '../../../../../_components/button';
 import Modal from '../../../../../_components/modal';
+import  SwalAlert  from '../../../../../_components/swal';
 import { Input } from '../../../../../components/input';
 import Textarea from '../../../../../components/textarea';
-
+import { create_event_service } from '../../../../../services/events-service';
 export default function CreateSection() {
     const [showModal, setShowModal] = useState(false);
 
@@ -36,7 +37,7 @@ export default function CreateSection() {
         name: 'prizes',
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         if (data.start_at && data.end_at && data.start_at > data.end_at) {
             setError('end_at', {
                 type: 'manual',
@@ -52,8 +53,16 @@ export default function CreateSection() {
             prizes: validPrizes,
         };
 
-        console.log('Event Data:', eventData);
-        setShowModal(false);
+        try {
+            await create_event_service(eventData);
+            await SwalAlert({
+                type: 'success',
+                title: 'Event created successfully',
+            });
+            setShowModal(false);
+        } catch (error) {
+            console.error('Error creating event:', error);
+        }
     };
 
     return (
@@ -89,8 +98,9 @@ export default function CreateSection() {
                             label="Description"
                             placeholder="Describe the event..."
                             {...register('description', {
-                                required: 'Event description is required',
+                                required: 'description is required',
                             })}
+                            name="description"
                             error={errors.description?.message}
                             rows={3}
                         />
@@ -107,10 +117,10 @@ export default function CreateSection() {
                             <Input
                                 label="End Date"
                                 type="date"
-                                {...register('end_At', {
+                                {...register('end_at', {
                                     required: 'End date is required',
                                 })}
-                                error={errors.end_At?.message}
+                                error={errors.end_at?.message}
                             />
                         </div>
 
@@ -150,20 +160,6 @@ export default function CreateSection() {
                                         })}
                                         error={
                                             errors.prizes?.[idx]?.quantity
-                                                ?.message
-                                        }
-                                    />
-                                    <Input
-                                        label="Description"
-                                        placeholder="Description"
-                                        {...register(
-                                            `prizes.${idx}.description`,
-                                            {
-                                                required: 'Field is required',
-                                            },
-                                        )}
-                                        error={
-                                            errors.prizes?.[idx]?.description
                                                 ?.message
                                         }
                                     />

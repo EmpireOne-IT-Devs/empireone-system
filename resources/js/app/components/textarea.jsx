@@ -2,7 +2,8 @@ export default function Textarea({
     label = 'Message',
     placeholder = 'Type here...',
     rows = 4,
-    error
+    error,
+    ...props
 }) {
     return (
         <div className="w-full max-w-md">
@@ -13,6 +14,7 @@ export default function Textarea({
                 id="message"
                 rows={rows}
                 placeholder={placeholder}
+                {...props}
                 className="block w-full resize-none rounded-lg border border-gray-300 p-2.5 shadow-sm sm:text-sm"
             />
             {

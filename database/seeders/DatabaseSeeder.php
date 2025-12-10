@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Raffle;
+use App\Models\RaffleEvent;
 use App\Models\RaffleParticipant;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,12 +18,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create default raffle
-        $raffle = Raffle::create([
-            'raffle_name' => 'EmpireOne Christmas Raffle 2024',
+        $raffle = RaffleEvent::create([
+            'name' => 'EmpireOne Christmas Raffle 2024',
             'description' => 'Win amazing prizes this Christmas season!',
-            'status' => 'active',
-            'start_date' => now(),
-            'end_date' => now()->addDays(30),
+            'start_at' => now(),
+            'end_at' => now()->addDays(30),
         ]);
 
         // Sample names

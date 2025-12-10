@@ -1,1 +1,0 @@
-import{j as m}from"./app-CvaAx_e9.js";import i from"./auth-simple-layout-HCBJjWXp.js";import"./app-logo-icon-Kaxz3IoH.js";function s({children:t,title:o,description:r,...u}){return m.jsx(i,{title:o,description:r,...u,children:t})}export{s as default};

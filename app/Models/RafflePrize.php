@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class RafflePrize extends Model
 {
     protected $fillable = [
+        'raffle_event_id',
         'winner_id',
         'name',
         'url',

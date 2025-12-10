@@ -1,1 +1,0 @@
-import{r as o,j as s}from"./app-CvaAx_e9.js";import{P as i}from"./index-CybdqcFV.js";var l="Label",a=o.forwardRef((r,e)=>s.jsx(i.label,{...r,ref:e,onMouseDown:t=>{t.target.closest("button, input, select, textarea")||(r.onMouseDown?.(t),!t.defaultPrevented&&t.detail>1&&t.preventDefault())}}));a.displayName=l;var m=a;export{m as R};
