@@ -15,7 +15,7 @@ import {
     TableHeader,
     TableRow,
 } from '../../../../../components/table';
-import CreateSection from './create_section';
+import CreateSection from './create-section';
 import EditSection from './edit_section';
 import ResetSection from './reset_section';
 import ViewSection from './view_section';

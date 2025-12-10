@@ -1,15 +1,12 @@
 import React from "react";
-import RouletteWheelSection from "./roulette-wheel-section";
 import { useSelector } from "react-redux";
 import { create_winners_service } from "@/app/services/winners-service";
-import moment from "moment";
 import store from "@/app/store/store";
-import { get_participants_thunk } from "@/app/redux/participants-thunk";
 import { get_winners_thunk } from "@/app/redux/winner-thunk";
 import SlotMachineSection from "./slot-machine-section";
 
 const WheelSection = () => {
-    const { participants } = useSelector((store) => store.participants);
+    const { participants } = useSelector((store) => store.raffles);
 
     async function get_winner(data) {
         console.log("Winner selected: ", data);

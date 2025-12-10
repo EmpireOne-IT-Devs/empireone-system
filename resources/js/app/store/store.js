@@ -1,12 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import appSlice from '../redux/app-slice';
-import participantsSlice from '../redux/participants-slice';
-import winnersSlice from '../redux/winner-slice';
+import raffleSlice from '../redux/raffle-slice';
 const store = configureStore({
     reducer: {
         app: appSlice,
-        participants: participantsSlice,
-        winners: winnersSlice,
+        raffles: raffleSlice,
     },
 });
 

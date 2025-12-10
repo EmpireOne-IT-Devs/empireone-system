@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RaffleEventController;
 use App\Http\Controllers\RaffleParticipantController;
 use App\Http\Controllers\RaffleWinnerController;
 use Illuminate\Http\Request;
@@ -13,3 +14,4 @@ Route::get('/user', function (Request $request) {
 
 Route::resource('participants', RaffleParticipantController::class);
 Route::resource('winners', RaffleWinnerController::class);
+Route::resource('events', RaffleEventController::class);

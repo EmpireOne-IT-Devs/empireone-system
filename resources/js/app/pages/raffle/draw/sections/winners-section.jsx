@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 const WinnersSection = () => {
-    const {winners} = useSelector((store) => store.winners);
+    const {winners} = useSelector((store) => store.raffles);
     return (
         <div className="relative bg-gradient-to-br from-amber-50 via-white to-sky-50 rounded-3xl shadow-2xl overflow-hidden lg:sticky lg:top-6">
             {/* Top Gradient Border */}

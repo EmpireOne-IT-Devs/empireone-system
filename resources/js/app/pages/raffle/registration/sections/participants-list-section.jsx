@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 export default function ParticipantsListSection() {
-    const { participants } = useSelector((store) => store.participants);
+    const { participants } = useSelector((store) => store.raffles);
     console.log("participants", participants);
     const loading = false;
     return (

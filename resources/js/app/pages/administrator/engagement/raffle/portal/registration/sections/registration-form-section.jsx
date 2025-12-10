@@ -1,7 +1,7 @@
 import Button from "@/app/_components/button";
 import Input from "@/app/_components/input";
 import SwalAlert from "@/app/_components/swal";
-import { get_participants_thunk } from "@/app/redux/participants-thunk";
+import { get_participants_thunk } from "@/app/redux/raffle-thunk";
 import { create_participant_service } from "@/app/services/participants-service";
 import store from "@/app/store/store";
 import React from "react";

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import store from "@/app/store/store";
-import { get_participants_thunk } from "@/app/redux/participants-thunk";
+import { get_participants_thunk } from "@/app/redux/raffle-thunk";
 
 const ITEM_HEIGHT = 100;
 const MARGIN_VERTICAL = 10;
