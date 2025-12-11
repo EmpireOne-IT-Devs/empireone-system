@@ -60,7 +60,7 @@ const WinnersSection = () => {
                             </div>
                         </div>
                     ) : (
-                        winners.map((winner, index) => (
+                        [...(winners || [])].sort((a, b) => b.id - a.id).map((winner, index) => (
                             <div 
                                 key={winner.id || index} 
                                 className="group relative bg-gradient-to-br from-white to-sky-50 border-2 border-sky-200 rounded-2xl p-5 hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden"

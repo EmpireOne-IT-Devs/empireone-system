@@ -1,1 +1,0 @@
-import{j as t,L as r}from"./app-larK_2PJ.js";import{B as i}from"./button-BydtEJSE.js";import"./index-2m9s2C9M.js";function s({data:e}){return t.jsx(r,{href:`/administrator/engagement/raffle/${e.id}`,children:t.jsx(i,{children:"View"})})}export{s as default};

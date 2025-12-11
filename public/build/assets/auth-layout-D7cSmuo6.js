@@ -1,1 +1,0 @@
-import{j as m}from"./app-larK_2PJ.js";import a from"./auth-simple-layout-Dv_xsDC4.js";function p({children:t,title:o,description:r,...u}){return m.jsx(a,{title:o,description:r,...u,children:t})}export{p as default};
