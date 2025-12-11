@@ -9,11 +9,9 @@ class RaffleParticipant extends Model
     protected $fillable = [
         'raffle_event_id',
         'name',
-        'contact',
-        'email',
-        'qr_code_data',
+        'employee_id',
+        'account',
         'is_winner',
-        'scanned_at',
     ];
 
     protected $casts = [

@@ -9,7 +9,8 @@ class RaffleWinner extends Model
     protected $fillable = [
         'raffle_event_id',
         'winner_id',
-        'drawn_at'
+        'drawn_at',
+        'prize_id'
     ];
 
     protected $casts = [

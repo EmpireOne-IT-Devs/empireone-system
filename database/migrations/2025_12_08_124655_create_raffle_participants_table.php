@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('raffle_participants', function (Blueprint $table) {
             $table->id();
             $table->string('raffle_event_id')->nullable();
-            $table->string('name');
-            $table->string('contact');
-            $table->string('email')->unique();
-            $table->string('qr_code_data')->unique();
+            $table->string('name')->nullable();
+            $table->string('employee_id')->nullable();
+            $table->string('account')->nullable();
             $table->boolean('is_winner')->default(false);
-            $table->timestamp('scanned_at')->nullable();
             $table->timestamps();
         });
     }

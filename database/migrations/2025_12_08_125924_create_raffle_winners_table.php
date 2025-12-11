@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('raffle_event_id')->nullable();
             $table->foreignId('winner_id')->nullable();
+            $table->foreignId('prize_id')->nullable();
             $table->timestamp('drawn_at');
             $table->timestamps();
         });

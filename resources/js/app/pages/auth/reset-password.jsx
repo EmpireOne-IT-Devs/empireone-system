@@ -1,12 +1,12 @@
 import NewPasswordController from '@/actions/App/Http/Controllers/Auth/NewPasswordController';
 import { Form, Head } from '@inertiajs/react';
 
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
-import AuthLayout from '@/layouts/auth-layout';
+import InputError from '../../components/input-error';
+import { Button } from '../../components/button';
+import { Input } from '../../components/input';
+import { Label } from '../../components/label';
+import { Spinner } from '../../components/spinner';
+import AuthLayout from '../../pages/auth/auth-layout';
 
 export default function ResetPassword({ token, email }) {
     return (
