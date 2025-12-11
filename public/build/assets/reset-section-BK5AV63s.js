@@ -1,1 +1,0 @@
-import{j as e}from"./app-DbJrGo4f.js";import{B as t}from"./button-BhtoPmub.js";import"./index-DFX1tyP1.js";function i(){return e.jsx("div",{className:" flex justify-end",children:e.jsx(t,{className:"px-6 py-2",variant:"secondary",children:"Reset"})})}export{i as default};

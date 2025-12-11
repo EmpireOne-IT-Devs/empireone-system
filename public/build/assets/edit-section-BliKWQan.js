@@ -1,1 +1,0 @@
-import{j as t}from"./app-DbJrGo4f.js";import{B as i}from"./button-BhtoPmub.js";import"./index-DFX1tyP1.js";function a(){return t.jsx(i,{className:"",variant:"outline",children:"Edit"})}export{a as default};

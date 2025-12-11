@@ -1,0 +1,1 @@
+import{j as t}from"./app-larK_2PJ.js";import{B as i}from"./button-BydtEJSE.js";import"./index-2m9s2C9M.js";function a(){return t.jsx(i,{className:"",variant:"outline",children:"Edit"})}export{a as default};
