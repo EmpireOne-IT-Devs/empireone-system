@@ -132,21 +132,6 @@ export default function Page({ status, canResetPassword }) {
                             {status}
                         </div>
                     )}
-
-                    <div className="flex items-center justify-center gap-4">
-                        <button
-                            onClick={() => router.visit('/raffle/home')}
-                            className="w-1/2 rounded-xl bg-blue-700 p-3 text-white"
-                        >
-                            Raffle
-                        </button>
-                        <button
-                            onClick={() => router.visit('/news')}
-                            className="w-1/2 rounded-xl bg-blue-700 p-3 text-white"
-                        >
-                            News
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,1 @@
+import{j as t,L as r}from"./app-B1dnFpd4.js";import{B as i}from"./button-BAVdE00S.js";import"./index-DSUZj3_Y.js";function s({data:e}){return t.jsx(r,{href:`/administrator/engagement/raffle/${e.id}`,children:t.jsx(i,{children:"View"})})}export{s as default};

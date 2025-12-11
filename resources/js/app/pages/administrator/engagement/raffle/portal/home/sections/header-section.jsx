@@ -1,6 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 const HeaderSection = () => {
+    const { events } = useSelector((state) => state.raffles);
     // Add the font import
     React.useEffect(() => {
         const link = document.createElement('link');
@@ -70,7 +72,7 @@ const HeaderSection = () => {
                         <img
                             src="/images/newlogo.png"
                             alt="Slot Machine"
-                            className="mb-2 w-40 h-12 drop-shadow-2xl"
+                            className="mb-2 h-12 w-40 drop-shadow-2xl"
                             style={{
                                 filter: 'drop-shadow(0 0 20px rgba(0, 191, 255, 0.8))',
                             }}
@@ -131,7 +133,7 @@ const HeaderSection = () => {
                                 textShadow: '0 0 20px rgba(253, 224, 71, 0.5)',
                             }}
                         >
-                            🎉 Year End Party 2025 🎉
+                            🎉 {events?.name ?? 'Year End Party'} 🎉
                         </p>
                     </div>
 
