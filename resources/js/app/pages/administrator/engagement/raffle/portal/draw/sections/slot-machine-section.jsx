@@ -1,7 +1,8 @@
 import { get_participants_thunk } from '@/app/redux/raffle-thunk';
 import store from '@/app/store/store';
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import SelectPrizeSection from './select-prize-section';
 
 const ITEM_HEIGHT = 100;
 const MARGIN_VERTICAL = 10;
@@ -113,13 +114,52 @@ const SlotMachineSection = ({ participants, getWinner }) => {
     const [duplicatedItems, setDuplicatedItems] = useState([]);
     const [hasWinner, setHasWinner] = useState(false);
     const idleAnimationRef = useRef(null);
-
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const containerRef = useRef(null);
     const spinAudioRef = useRef(null);
     const winAudioRef = useRef(null);
     const tadaAudioRef = useRef(null);
 
     const LOOP_COUNT = 30;
 
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+        return () => {
+            document.removeEventListener(
+                'fullscreenchange',
+                handleFullscreenChange,
+            );
+        };
+    }, []);
+
+    const toggleFullscreen = () => {
+        const el = containerRef.current;
+        if (!document.fullscreenElement) {
+            if (el.requestFullscreen) {
+                el.requestFullscreen()
+                    .then(() => setIsFullscreen(true))
+                    .catch(console.error);
+            } else if (el.webkitRequestFullscreen) {
+                /* Safari */
+                el.webkitRequestFullscreen();
+                setIsFullscreen(true);
+            } else if (el.msRequestFullscreen) {
+                /* IE11 */
+                el.msRequestFullscreen();
+                setIsFullscreen(true);
+            }
+        } else {
+            document
+                .exitFullscreen()
+                .then(() => setIsFullscreen(false))
+                .catch(console.error);
+        }
+    };
     // Get CSS class names based on current state
     const getButtonClass = () => {
         if (spinPhase >= 4) return 'btn-phase-4';
@@ -538,8 +578,18 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                     }
                 `}
             </style>
+            <button
+                onClick={toggleFullscreen}
+                className="btn-base border border-gray-400 bg-gray-800 text-white hover:bg-gray-700"
+            >
+                {isFullscreen ? '🡽 Exit Fullscreen' : '🡾 Fullscreen'}
+            </button>
             <div
+                ref={containerRef}
+                className={`container-base ${getContainerClass()} ${isSpinning ? 'spinning-glow' : ''}`}
                 style={{
+                    width: '100%',
+                    height: `${VIEWPORT_HEIGHT}px`,
                     textAlign: 'center',
                     fontFamily: 'sans-serif',
                     backgroundColor:
@@ -563,6 +613,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                             : 'none',
                 }}
             >
+                {isFullscreen && <SelectPrizeSection />}
                 {/* Minimal Spinning Overlay Effects */}
                 {isSpinning && (
                     <div className="pointer-events-none fixed inset-0 z-10">
@@ -714,7 +765,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                         </div>
 
                         {/* Winner Card */}
-                        <div className="animate-scaleIn relative mx-8 w-full max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-yellow-400 via-yellow-300 to-orange-400 shadow-2xl">
+                        <div className="animate-scaleIn relative w-full max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-yellow-400 via-yellow-300 to-orange-400 shadow-2xl">
                             <button
                                 onClick={() => {
                                     setWinner(null);
