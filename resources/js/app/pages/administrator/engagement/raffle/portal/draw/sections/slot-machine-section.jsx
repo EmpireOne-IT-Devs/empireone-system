@@ -109,7 +109,7 @@ const ScalingItem = React.memo(
 const SlotMachineSection = ({ participants, getWinner }) => {
     const listY = useMotionValue(0);
     const [isSpinning, setIsSpinning] = useState(false);
-    const [spinPhase, setSpinPhase] = useState(0); // 0: idle, 1: fast, 2: medium, 3: slow, 4: ultra-slow, 5: final
+    const [spinPhase, setSpinPhase] = useState(0);
     const [winner, setWinner] = useState(null);
     const [duplicatedItems, setDuplicatedItems] = useState([]);
     const [hasWinner, setHasWinner] = useState(false);
@@ -119,6 +119,43 @@ const SlotMachineSection = ({ participants, getWinner }) => {
     const spinAudioRef = useRef(null);
     const winAudioRef = useRef(null);
     const tadaAudioRef = useRef(null);
+    
+    const [selectedPrize, setSelectedPrize] = useState(null);
+    const [prizeWinners, setPrizeWinners] = useState({});
+    // ADD THIS STATE TO STORE PRIZE INFO
+    const [currentPrizeInfo, setCurrentPrizeInfo] = useState(null);
+
+    // ADD THIS HELPER TO GET PRIZE INFO
+    const getPrizeInfo = (prizeKey) => {
+        const grandPrize = {
+            name: 'Motorcycle',
+            image: '/images/Motorcycle-removebg-preview.png',
+            isGrand: true,
+        };
+
+        const prizes = [
+            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
+            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
+            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
+            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
+            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
+            { name: 'Airconditioner', image: '/images/Aircon-removebg-preview.png' },
+            { name: 'Airconditioner', image: '/images/Aircon-removebg-preview.png' },
+            { name: 'Cellphone', image: '/images/cellphone-removebg-preview.png' },
+            { name: 'Cellphone', image: '/images/cellphone-removebg-preview.png' },
+            { name: 'Cellphone', image: '/images/cellphone-removebg-preview.png' },
+            { name: 'Cellphone', image: '/images/cellphone-removebg-preview.png' },
+            { name: 'Television', image: '/images/TV1-removebg-preview.png' },
+            { name: 'Stand Fan', image: '/images/electric-fan.webp' },
+            { name: 'Stand Fan', image: '/images/electric-fan.webp' },
+            { name: 'Stand Fan', image: '/images/electric-fan.webp' },
+        ];
+
+        if (prizeKey === 'grand') {
+            return grandPrize;
+        }
+        return prizes[prizeKey];
+    };
 
     const LOOP_COUNT = 30;
 
@@ -222,14 +259,23 @@ const SlotMachineSection = ({ participants, getWinner }) => {
     }, [isSpinning, hasWinner, duplicatedItems]);
 
     /* -----------------------------------------
-        SPIN LOGIC (ENHANCED WITH DRAMATIC SLOW MOTION & THRILL)
+        SPIN LOGIC (MODIFIED TO CHECK PRIZE SELECTION)
     ----------------------------------------- */
     const spinToResult = async () => {
+        // CHECK IF PRIZE IS SELECTED
+        if (!selectedPrize && selectedPrize !== 0) {
+            alert('Please select a prize first!');
+            return;
+        }
+
         if (isSpinning) return;
         setIsSpinning(true);
         setSpinPhase(1);
         setWinner(null);
         setHasWinner(false);
+
+        // SET CURRENT PRIZE INFO
+        setCurrentPrizeInfo(getPrizeInfo(selectedPrize));
 
         store.dispatch(get_participants_thunk());
 
@@ -344,6 +390,11 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         const actualWinningObject = freshDuplicatedItems[randomStopIndex];
         setWinner(actualWinningObject);
         if (getWinner) getWinner(actualWinningObject);
+        
+        setPrizeWinners((prev) => ({
+            ...prev,
+            [selectedPrize]: actualWinningObject,
+        }));
 
         // Reset audio playback rate
         if (spinAudioRef.current) {
@@ -548,6 +599,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                         overflow: hidden;
                         margin: 50px auto;
                         border-radius: 24px;
+                        color: #ffffffff;
                         background-color: #000;
                         position: relative;
                         transition: all 0.15s ease;
@@ -557,7 +609,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                         border: 4px solid #FFD700;
                         box-shadow: 0 0 20px rgba(255,215,0,0.6);
                         transform: scale(1);
-                    }
+                    } base
 
                     .container-spinning {
                         border: 5px solid #3b82f6;
@@ -592,28 +644,42 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                     height: `${VIEWPORT_HEIGHT}px`,
                     textAlign: 'center',
                     fontFamily: 'sans-serif',
-                    backgroundColor:
+                    background:
                         spinPhase >= 4
-                            ? '#0A0A0A'
+                            ? 'radial-gradient(circle at center, #4714ffff 0%, #3d1bd6ff 30%, #2b0bb8ff 60%, #000000 100%)'
                             : spinPhase >= 3
-                              ? '#0D0D0D'
+                              ? 'radial-gradient(circle at center, #2a03d8ff 0%, #4137d4ff 40%, #1a1a1a 100%)'
                               : isSpinning
-                                ? '#0F0F0F'
-                                : '#111',
+                                ? 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)'
+                                : 'linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%)',
                     minHeight: '100vh',
                     paddingTop: '50px',
-                    transition: 'background-color 0.5s ease',
+                    transition: 'background 0.5s ease',
                     animation:
                         spinPhase >= 4
-                            ? 'finalMomentShake 0.3s infinite'
-                            : 'none',
+                            ? 'finalMomentShake 0.3s infinite, goldShine 2s ease-in-out infinite'
+                            : spinPhase >= 3
+                              ? 'goldShine 2s ease-in-out infinite'
+                              : 'none',
                     filter:
                         spinPhase >= 3
-                            ? 'brightness(1.1) contrast(1.1)'
+                            ? 'brightness(1.2) contrast(1.15) saturate(1.3)'
                             : 'none',
+                    boxShadow:
+                        spinPhase >= 4
+                            ? 'inset 0 0 100px rgba(86, 74, 255, 0.4)'
+                            : spinPhase >= 3
+                              ? 'inset 0 0 60px rgba(72, 7, 192, 0.2)'
+                              : 'none',
                 }}
             >
-                {isFullscreen && <SelectPrizeSection />}
+                {isFullscreen && (
+                    <SelectPrizeSection
+                        selectedPrize={selectedPrize}
+                        setSelectedPrize={setSelectedPrize}
+                        prizeWinners={prizeWinners}
+                    />
+                )}
                 {/* Minimal Spinning Overlay Effects */}
                 {isSpinning && (
                     <div className="pointer-events-none fixed inset-0 z-10">
@@ -722,21 +788,24 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                     />
                 </div>
 
-                {/* Spin Button */}
+                {/* Spin Button - MODIFIED TO CHECK PRIZE SELECTION */}
                 <button
                     onClick={spinToResult}
-                    disabled={isSpinning}
-                    className={`btn-base ${getButtonClass()} ${isSpinning ? 'spinning-pulse' : ''}`}
+                    disabled={isSpinning || (!selectedPrize && selectedPrize !== 0)}
+                    className={`btn-base ${getButtonClass()} ${isSpinning ? 'spinning-pulse' : ''} ${(!selectedPrize && selectedPrize !== 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                    {isSpinning
-                        ? '🎰 SPINNING... 🎰'
-                        : '🎯 SPIN THE SLOT MACHINE! 🎯'}
+                    {(!selectedPrize && selectedPrize !== 0) 
+                        ? '⚠️ SELECT A PRIZE FIRST! ⚠️'
+                        : isSpinning
+                            ? '🎰 SPINNING... 🎰'
+                            : '🎯 SPIN THE SLOT MACHINE! 🎯'
+                    }
                 </button>
 
-                {/* Winner Modal */}
-                {winner && (
+                {/* Winner Modal - MODIFIED TO SHOW PRIZE */}
+                {winner && currentPrizeInfo && (
                     <div className="bg-opacity-90 fixed inset-0 z-30 flex items-center justify-center bg-black">
-                        {/* Confetti - Reduced amount */}
+                        {/* Confetti */}
                         <div className="pointer-events-none absolute inset-0 z-50 overflow-hidden">
                             {[...Array(20)].map((_, i) => (
                                 <div
@@ -755,9 +824,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                             '#f7b731',
                                             '#5f27cd',
                                         ][Math.floor(Math.random() * 5)],
-                                        animation: `confetti ${
-                                            2 + Math.random() * 1
-                                        }s linear forwards`,
+                                        animation: `confetti ${2 + Math.random() * 1}s linear forwards`,
                                         animationDelay: `${Math.random() * 1}s`,
                                     }}
                                 />
@@ -770,12 +837,10 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                 onClick={() => {
                                     setWinner(null);
                                     setHasWinner(false);
-                                    // Restart idle animation after closing modal
+                                    setSelectedPrize(null);
+                                    setCurrentPrizeInfo(null);
                                     setTimeout(() => {
-                                        if (
-                                            !isSpinning &&
-                                            duplicatedItems.length > 0
-                                        ) {
+                                        if (!isSpinning && duplicatedItems.length > 0) {
                                             const currentY = listY.get();
                                             idleAnimationRef.current = animate(
                                                 listY,
@@ -821,6 +886,29 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                     <p className="bg-gradient-to-r from-yellow-600 via-red-600 to-yellow-600 bg-clip-text text-6xl font-extrabold text-transparent">
                                         {winner.name}
                                     </p>
+                                </div>
+
+                                {/* PRIZE SECTION */}
+                                <div className="space-y-4">
+                                    <p className="text-3xl font-bold text-yellow-900">
+                                        {currentPrizeInfo.isGrand ? 'GRAND PRIZE' : 'Prize Won'}
+                                    </p>
+                                    
+                                    <div className="flex items-center justify-center gap-6 rounded-2xl bg-white p-6 shadow-2xl">
+                                        <img 
+                                            src={currentPrizeInfo.image} 
+                                            alt={currentPrizeInfo.name}
+                                            className="h-32 w-auto object-contain animate-pulse"
+                                            onError={(e) => {
+                                                e.target.src = '/images/placeholder.jpg';
+                                            }}
+                                        />
+                                        <div className="text-left">
+                                            <p className="text-4xl font-extrabold bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-600 bg-clip-text text-transparent">
+                                                {currentPrizeInfo.name}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {winner.email && (
