@@ -38,8 +38,6 @@ class RaffleWinnerController extends Controller
             ], 422);
         }
 
-        DB::beginTransaction();
-
         try {
             $participant->update(['is_winner' => true]);
             $winner = RaffleWinner::create([
@@ -52,7 +50,7 @@ class RaffleWinnerController extends Controller
                 'success' => true,
                 'message' => 'Winner recorded successfully',
                 'winner' => $winner->load(['participant', 'raffle'])
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
