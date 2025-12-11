@@ -19,8 +19,8 @@ class DatabaseSeeder extends Seeder
     {
         // Create default raffle
         $raffle = RaffleEvent::create([
-            'name' => 'EmpireOne Christmas Raffle 2024',
-            'description' => 'Win amazing prizes this Christmas season!',
+            'name' => 'EmpireOne Year End Party Raffle 2025',
+            'description' => 'Win amazing prizes this Year End Party season!',
             'start_at' => now(),
             'end_at' => now()->addDays(30),
         ]);
