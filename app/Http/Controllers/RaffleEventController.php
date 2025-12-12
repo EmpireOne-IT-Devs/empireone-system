@@ -16,7 +16,7 @@ class RaffleEventController extends Controller
 
     public function show($id)
     {
-        $event = RaffleEvent::where('id', $id)->with(['participants','winners'])->first();
+        $event = RaffleEvent::where('id', $id)->with(['participants','winners','prizes'])->first();
         return response()->json($event);
     }
     public function store(Request $request)

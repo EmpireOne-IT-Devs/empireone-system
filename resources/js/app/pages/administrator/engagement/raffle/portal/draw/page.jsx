@@ -6,12 +6,13 @@ import HeaderSection from "./sections/header-section";
 import WheelSection from "./sections/wheel-section";
 import WinnersSection from "./sections/winners-section";
 import store from "@/app/store/store";
-import { get_participants_thunk,get_winners_thunk } from "@/app/redux/raffle-thunk";
+import { get_participants_thunk,get_winners_thunk,get_prizes_thunk } from "@/app/redux/raffle-thunk";
 
 const Page = () => {
     useEffect(() => {
         store.dispatch(get_participants_thunk());
         store.dispatch(get_winners_thunk());
+        store.dispatch(get_prizes_thunk());
     }, []);
     // const dispatch = useDispatch();
     // const { participants = [], winners = [], loading, error } = useSelector((state) => state.raffle);

@@ -119,41 +119,63 @@ const SlotMachineSection = ({ participants, getWinner }) => {
     const spinAudioRef = useRef(null);
     const winAudioRef = useRef(null);
     const tadaAudioRef = useRef(null);
-    
+
     const [selectedPrize, setSelectedPrize] = useState(null);
     const [prizeWinners, setPrizeWinners] = useState({});
-    // ADD THIS STATE TO STORE PRIZE INFO
-    const [currentPrizeInfo, setCurrentPrizeInfo] = useState(null);
 
     // ADD THIS HELPER TO GET PRIZE INFO
     const getPrizeInfo = (prizeKey) => {
-        const grandPrize = {
-            name: 'Motorcycle',
-            image: '/images/Motorcycle-removebg-preview.png',
-            isGrand: true,
-        };
-
         const prizes = [
-            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
-            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
-            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
-            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
-            { name: 'Sack Of Rice', image: '/images/Rice-removebg-preview.png' },
-            { name: 'Airconditioner', image: '/images/Aircon-removebg-preview.png' },
-            { name: 'Airconditioner', image: '/images/Aircon-removebg-preview.png' },
-            { name: 'Cellphone', image: '/images/cellphone-removebg-preview.png' },
-            { name: 'Cellphone', image: '/images/cellphone-removebg-preview.png' },
-            { name: 'Cellphone', image: '/images/cellphone-removebg-preview.png' },
-            { name: 'Cellphone', image: '/images/cellphone-removebg-preview.png' },
+            {
+                name: 'Sack Of Rice',
+                image: '/images/Rice-removebg-preview.png',
+            },
+            {
+                name: 'Sack Of Rice',
+                image: '/images/Rice-removebg-preview.png',
+            },
+            {
+                name: 'Sack Of Rice',
+                image: '/images/Rice-removebg-preview.png',
+            },
+            {
+                name: 'Sack Of Rice',
+                image: '/images/Rice-removebg-preview.png',
+            },
+            {
+                name: 'Sack Of Rice',
+                image: '/images/Rice-removebg-preview.png',
+            },
+            {
+                name: 'Airconditioner',
+                image: '/images/Aircon-removebg-preview.png',
+            },
+            {
+                name: 'Airconditioner',
+                image: '/images/Aircon-removebg-preview.png',
+            },
+            {
+                name: 'Cellphone',
+                image: '/images/cellphone-removebg-preview.png',
+            },
+            {
+                name: 'Cellphone',
+                image: '/images/cellphone-removebg-preview.png',
+            },
+            {
+                name: 'Cellphone',
+                image: '/images/cellphone-removebg-preview.png',
+            },
+            {
+                name: 'Cellphone',
+                image: '/images/cellphone-removebg-preview.png',
+            },
             { name: 'Television', image: '/images/TV1-removebg-preview.png' },
             { name: 'Stand Fan', image: '/images/electric-fan.webp' },
             { name: 'Stand Fan', image: '/images/electric-fan.webp' },
             { name: 'Stand Fan', image: '/images/electric-fan.webp' },
         ];
 
-        if (prizeKey === 'grand') {
-            return grandPrize;
-        }
         return prizes[prizeKey];
     };
 
@@ -274,8 +296,6 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         setWinner(null);
         setHasWinner(false);
 
-        // SET CURRENT PRIZE INFO
-        setCurrentPrizeInfo(getPrizeInfo(selectedPrize));
 
         store.dispatch(get_participants_thunk());
 
@@ -389,8 +409,13 @@ const SlotMachineSection = ({ participants, getWinner }) => {
 
         const actualWinningObject = freshDuplicatedItems[randomStopIndex];
         setWinner(actualWinningObject);
-        if (getWinner) getWinner(actualWinningObject);
-        
+        if (getWinner)
+            getWinner({
+                ...actualWinningObject,
+                ...selectedPrize,
+                prize_id: selectedPrize.id,
+            });
+
         setPrizeWinners((prev) => ({
             ...prev,
             [selectedPrize]: actualWinningObject,
@@ -673,13 +698,6 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                               : 'none',
                 }}
             >
-                {isFullscreen && (
-                    <SelectPrizeSection
-                        selectedPrize={selectedPrize}
-                        setSelectedPrize={setSelectedPrize}
-                        prizeWinners={prizeWinners}
-                    />
-                )}
                 {/* Minimal Spinning Overlay Effects */}
                 {isSpinning && (
                     <div className="pointer-events-none fixed inset-0 z-10">
@@ -716,94 +734,106 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                 />
 
                 {/* Slot Machine Viewport */}
-                <div
-                    className={`container-base ${getContainerClass()} ${isSpinning ? 'spinning-glow' : ''}`}
-                >
-                    <motion.div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            minHeight:
-                                TOTAL_ITEM_HEIGHT * duplicatedItems.length +
-                                'px',
-                            y: listY,
-                        }}
-                    >
-                        {duplicatedItems.map((item, idx) => (
-                            <ScalingItem
-                                key={idx}
-                                item={item}
-                                itemIndex={idx}
-                                listY={listY}
-                                isSpinning={isSpinning}
-                                spinPhase={spinPhase}
+                <div className="flex flex-row-reverse items-center justify-center gap-3">
+                    <div className={isFullscreen ? 'w-1/2' : ''}>
+                        {isFullscreen && (
+                            <SelectPrizeSection
+                                selectedPrize={selectedPrize}
+                                setSelectedPrize={setSelectedPrize}
+                                prizeWinners={prizeWinners}
                             />
-                        ))}
-                    </motion.div>
-
-                    {/* Center Indicator */}
+                        )}
+                    </div>
                     <div
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: 0,
-                            transform: 'translateY(-50%)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            zIndex: 10,
-                            width: '10%',
-                        }}
+                        className={`${isFullscreen ? 'w-1/2' : ''} container-base ${getContainerClass()} ${isSpinning ? 'spinning-glow' : ''}`}
                     >
-                        <div
+                        <motion.div
                             style={{
-                                height: '10px',
-                                backgroundColor: 'red',
-                                flex: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                minHeight:
+                                    TOTAL_ITEM_HEIGHT * duplicatedItems.length +
+                                    'px',
+                                y: listY,
                             }}
-                        />
+                        >
+                            {duplicatedItems.map((item, idx) => (
+                                <ScalingItem
+                                    key={idx}
+                                    item={item}
+                                    itemIndex={idx}
+                                    listY={listY}
+                                    isSpinning={isSpinning}
+                                    spinPhase={spinPhase}
+                                />
+                            ))}
+                        </motion.div>
+
+                        {/* Center Indicator */}
                         <div
                             style={{
-                                width: 0,
-                                height: 0,
-                                borderTop: '10px solid transparent',
-                                borderBottom: '10px solid transparent',
-                                borderLeft: '16px solid red',
+                                position: 'absolute',
+                                top: '50%',
+                                left: 0,
+                                transform: 'translateY(-50%)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                zIndex: 10,
+                                width: '10%',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    height: '10px',
+                                    backgroundColor: 'red',
+                                    flex: 1,
+                                }}
+                            />
+                            <div
+                                style={{
+                                    width: 0,
+                                    height: 0,
+                                    borderTop: '10px solid transparent',
+                                    borderBottom: '10px solid transparent',
+                                    borderLeft: '16px solid red',
+                                }}
+                            />
+                        </div>
+
+                        {/* Gradient Overlay */}
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                backgroundImage:
+                                    'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,1) 100%)',
+                                pointerEvents: 'none',
+                                zIndex: 5,
                             }}
                         />
                     </div>
-
-                    {/* Gradient Overlay */}
-                    <div
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            backgroundImage:
-                                'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,1) 100%)',
-                            pointerEvents: 'none',
-                            zIndex: 5,
-                        }}
-                    />
                 </div>
 
                 {/* Spin Button - MODIFIED TO CHECK PRIZE SELECTION */}
                 <button
                     onClick={spinToResult}
-                    disabled={isSpinning || (!selectedPrize && selectedPrize !== 0)}
-                    className={`btn-base ${getButtonClass()} ${isSpinning ? 'spinning-pulse' : ''} ${(!selectedPrize && selectedPrize !== 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={
+                        isSpinning || (!selectedPrize && selectedPrize !== 0)
+                    }
+                    className={`btn-base ${getButtonClass()} ${isSpinning ? 'spinning-pulse' : ''} ${!selectedPrize && selectedPrize !== 0 ? 'cursor-not-allowed opacity-50' : ''}`}
                 >
-                    {(!selectedPrize && selectedPrize !== 0) 
+                    {!selectedPrize && selectedPrize !== 0
                         ? '⚠️ SELECT A PRIZE FIRST! ⚠️'
                         : isSpinning
-                            ? '🎰 SPINNING... 🎰'
-                            : '🎯 SPIN THE SLOT MACHINE! 🎯'
-                    }
+                          ? '🎰 SPINNING... 🎰'
+                          : '🎯 SPIN THE SLOT MACHINE! 🎯'}
                 </button>
 
                 {/* Winner Modal - MODIFIED TO SHOW PRIZE */}
-                {winner && currentPrizeInfo && (
+                {winner && (
                     <div className="bg-opacity-90 fixed inset-0 z-30 flex items-center justify-center bg-black">
                         {/* Confetti */}
                         <div className="pointer-events-none absolute inset-0 z-50 overflow-hidden">
@@ -838,9 +868,11 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                     setWinner(null);
                                     setHasWinner(false);
                                     setSelectedPrize(null);
-                                    setCurrentPrizeInfo(null);
                                     setTimeout(() => {
-                                        if (!isSpinning && duplicatedItems.length > 0) {
+                                        if (
+                                            !isSpinning &&
+                                            duplicatedItems.length > 0
+                                        ) {
                                             const currentY = listY.get();
                                             idleAnimationRef.current = animate(
                                                 listY,
@@ -891,21 +923,25 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                 {/* PRIZE SECTION */}
                                 <div className="space-y-4">
                                     <p className="text-3xl font-bold text-yellow-900">
-                                        {currentPrizeInfo.isGrand ? 'GRAND PRIZE' : 'Prize Won'}
+                                        {/* {currentPrizeInfo.isGrand
+                                            ? 'GRAND PRIZE'
+                                            : 'Prize Won'} */}
+                                            Prize Won
                                     </p>
-                                    
+
                                     <div className="flex items-center justify-center gap-6 rounded-2xl bg-white p-6 shadow-2xl">
-                                        <img 
-                                            src={currentPrizeInfo.image} 
-                                            alt={currentPrizeInfo.name}
-                                            className="h-32 w-auto object-contain animate-pulse"
+                                        <img
+                                            src={selectedPrize.url}
+                                            alt={selectedPrize.name}
+                                            className="h-32 w-auto animate-pulse object-contain"
                                             onError={(e) => {
-                                                e.target.src = '/images/placeholder.jpg';
+                                                e.target.src =
+                                                    '/images/placeholder.jpg';
                                             }}
                                         />
                                         <div className="text-left">
-                                            <p className="text-4xl font-extrabold bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-600 bg-clip-text text-transparent">
-                                                {currentPrizeInfo.name}
+                                            <p className="bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-600 bg-clip-text text-4xl font-extrabold text-transparent">
+                                                {selectedPrize.name}
                                             </p>
                                         </div>
                                     </div>

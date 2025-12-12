@@ -1,0 +1,1 @@
+import{j as t}from"./app-CjJEGrvZ.js";import{B as i}from"./button-BV3pyWFf.js";import"./index-BPlmXpRn.js";function a(){return t.jsx(i,{className:"",variant:"outline",children:"Edit"})}export{a as default};

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RaffleParticipant;
+use App\Models\RafflePrize;
 use App\Models\RaffleWinner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,6 @@ class RaffleWinnerController extends Controller
     {
         $winners = RaffleWinner::where('raffle_event_id', $request->query('raffle_event_id'))
             ->with(['participant'])->get();
-
         return response()->json($winners);
     }
 
@@ -44,8 +44,13 @@ class RaffleWinnerController extends Controller
                 'raffle_event_id' => $validated['raffle_event_id'],
                 'winner_id' => $validated['participant_id'],
                 'drawn_at' => now(),
+                'prize_id' => $request->prize_id,
             ]);
 
+            $raffle_prize = RafflePrize::where('id', $request->prize_id)->first();
+            if ($raffle_prize) {
+                $raffle_prize->update(['winner_id' => $validated['participant_id']]);
+            }
             return response()->json([
                 'success' => true,
                 'message' => 'Winner recorded successfully',

@@ -9,6 +9,8 @@ export const raffleSlice = createSlice({
         participant: {},
         winners: [],
         winner: {},
+        prizes: [],
+        prize:{}
     },
     reducers: {
         setEvents: (state, action) => {
@@ -29,6 +31,12 @@ export const raffleSlice = createSlice({
         setWinner: (state, action) => {
             state.winner = action.payload;
         },
+        setPrizes: (state, action) => {
+            state.prizes = action.payload;
+        },
+        setPrize: (state, action) => {
+            state.prize = action.payload;
+        }
     },
 });
 export const {
@@ -38,6 +46,8 @@ export const {
     setParticipant,
     setWinners,
     setWinner,
+    setPrizes,
+    setPrize
 } = raffleSlice.actions;
 
 export default raffleSlice.reducer;
