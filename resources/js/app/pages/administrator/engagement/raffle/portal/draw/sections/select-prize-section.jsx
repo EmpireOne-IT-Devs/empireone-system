@@ -41,6 +41,15 @@ export default function SelectPrizeSection({
                 }
             `}</style>
 
+            <div className="text-center">
+                <h2 className="text-2xl font-bold text-yellow-500">
+                    🎁 Select a Prize 🎁
+                </h2>
+                <p className="text-sm text-white mt-1">
+                    Choose a prize to draw a winner
+                </p>
+            </div>
+
             {/* Regular Prizes */}
             <div className="flex w-full flex-row flex-wrap items-center justify-center gap-4">
                 {prizes.map((prize, index) => {
@@ -55,7 +64,7 @@ export default function SelectPrizeSection({
                                 !hasWinner && setSelectedPrize(prize)
                             }
                             disabled={hasWinner}
-                            className={`pulse-regular relative flex h-24 w-40 flex-col items-center justify-center rounded-md border-2 p-1.5 transition-all ${
+                            className={`pulse-regular relative flex h-30 w-40 flex-col items-center justify-center rounded-md border-2 p-1.5 transition-all ${
                                 hasWinner
                                     ? 'cursor-not-allowed border-gray-400 bg-gray-200 opacity-60'
                                     : isSelected

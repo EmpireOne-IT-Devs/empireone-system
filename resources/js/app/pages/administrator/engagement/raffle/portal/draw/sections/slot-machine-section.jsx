@@ -16,35 +16,58 @@ const SCALING_RANGE = TOTAL_ITEM_HEIGHT * 1.5;
     Scaling Item (Enhanced with Dramatic Thrill Effects)
 ----------------------------------------- */
 const ScalingItem = React.memo(
-    ({ item, itemIndex, listY, isSpinning, spinPhase }) => {
+    ({
+        item,
+        itemIndex,
+        listY,
+        isSpinning,
+        spinPhase,
+        isFullscreen,
+        containerHeight,
+    }) => {
         const itemCenterOffset =
             itemIndex * TOTAL_ITEM_HEIGHT + TOTAL_ITEM_HEIGHT / 2;
+
+        // Use dynamic viewport center based on actual container height
+        const dynamicViewportCenter = containerHeight / 2;
 
         const scale = useTransform(listY, (currentY) => {
             const itemAbsoluteY = itemCenterOffset + currentY;
             const distanceFromCenter = Math.abs(
-                itemAbsoluteY - VIEWPORT_CENTER,
+                itemAbsoluteY - dynamicViewportCenter,
             );
             const normalizedDistance = Math.min(
                 distanceFromCenter,
                 SCALING_RANGE,
             );
-            const baseScale = 1.2 - 0.2 * (normalizedDistance / SCALING_RANGE);
 
-            // Progressive scaling based on spin phase for maximum drama
+            // Simpler scaling for better performance
+            const baseScale = 1.2 - 0.3 * (normalizedDistance / SCALING_RANGE);
+
+            // Only apply phase multiplier during final phase
             let phaseMultiplier = 1;
-            if (spinPhase >= 3) {
-                // Slow-motion phases
-                phaseMultiplier = 1.3; // More dramatic scaling
-            } else if (spinPhase >= 1) {
-                // Active spinning
-                phaseMultiplier = 1.15;
+            if (spinPhase >= 4 && !isSpinning) {
+                phaseMultiplier = 1.1;
             }
 
-            return isSpinning ? baseScale * phaseMultiplier : baseScale;
+            return baseScale * phaseMultiplier;
         });
 
-        // Memoize base styles to reduce recalculation
+        // Simpler opacity calculation
+        const opacity = useTransform(listY, (currentY) => {
+            const itemAbsoluteY = itemCenterOffset + currentY;
+            const distanceFromCenter = Math.abs(
+                itemAbsoluteY - dynamicViewportCenter,
+            );
+            const normalizedDistance = Math.min(
+                distanceFromCenter,
+                SCALING_RANGE * 1.5,
+            );
+
+            return 1 - (normalizedDistance / (SCALING_RANGE * 1.5)) * 0.5;
+        });
+
+        // Memoize base styles with lighter transitions
         const baseStyles = useMemo(
             () => ({
                 width: '90%',
@@ -58,47 +81,64 @@ const ScalingItem = React.memo(
                 fontWeight: '700',
                 flexShrink: 0,
                 scale,
+                opacity,
+                willChange: 'transform, opacity',
             }),
-            [scale],
+            [scale, opacity],
         );
 
-        // Get phase-specific styles
+        // Lighter phase-specific styles - remove heavy animations during spin
         const getPhaseStyles = useMemo(() => {
+            // During fast spinning, use simpler styles
+            if (isSpinning && spinPhase < 4) {
+                return {
+                    background:
+                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                    fontSize: '1.4em',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                };
+            }
+
+            // Only show fancy effects during slow phases or stopped
             if (spinPhase >= 4) {
                 return {
-                    backgroundColor: '#1E40AF',
+                    background:
+                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     boxShadow:
-                        '0 0 25px rgba(30, 64, 175, 0.8), 0 0 50px rgba(59, 130, 246, 0.4)',
-                    border: '2px solid rgba(255, 215, 0, 0.8)',
-                    fontSize: '1.5em',
-                    textShadow: '0 0 10px rgba(59, 130, 246, 0.8)',
+                        '0 0 30px rgba(102, 126, 234, 0.8), 0 0 60px rgba(118, 75, 162, 0.6)',
+                    border: '3px solid #ffd700',
+                    fontSize: '1.6em',
+                    textShadow:
+                        '0 0 15px rgba(255, 215, 0, 0.8), 0 2px 4px rgba(0,0,0,0.5)',
                 };
             } else if (spinPhase >= 3) {
                 return {
-                    backgroundColor: '#2563EB',
-                    boxShadow: '0 0 20px rgba(37, 99, 235, 0.6)',
-                    border: '1px solid rgba(255, 215, 0, 0.6)',
-                    fontSize: '1.45em',
-                };
-            } else if (spinPhase >= 1) {
-                return {
-                    backgroundColor: '#3B82F6',
-                    boxShadow: '0 0 15px rgba(59, 130, 246, 0.4)',
-                    border: '1px solid rgba(255, 215, 0, 0.3)',
-                    fontSize: '1.4em',
+                    background:
+                        'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    boxShadow: '0 0 25px rgba(240, 147, 251, 0.7)',
+                    border: '2px solid #ffd700',
+                    fontSize: '1.5em',
+                    textShadow: '0 0 12px rgba(255, 215, 0, 0.6)',
                 };
             } else {
                 return {
-                    backgroundColor: '#1F2937',
-                    boxShadow: '0 0 3px rgba(255,255,255,0.1)',
+                    background:
+                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
                     fontSize: '1.4em',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
                 };
             }
-        }, [spinPhase]);
+        }, [spinPhase, isSpinning]);
 
         return (
             <motion.div style={{ ...baseStyles, ...getPhaseStyles }}>
-                {item.name}
+                <div style={{ textAlign: 'center', width: '100%' }}>
+                    {item.name}
+                </div>
             </motion.div>
         );
     },
@@ -120,6 +160,8 @@ const SlotMachineSection = ({ participants, getWinner }) => {
     const spinAudioRef = useRef(null);
     const winAudioRef = useRef(null);
     const tadaAudioRef = useRef(null);
+    const slotContainerRef = useRef(null);
+    const [containerHeight, setContainerHeight] = useState(VIEWPORT_HEIGHT);
 
     const [selectedPrize, setSelectedPrize] = useState(null);
 
@@ -193,6 +235,14 @@ const SlotMachineSection = ({ participants, getWinner }) => {
     useEffect(() => {
         const handleFullscreenChange = () => {
             setIsFullscreen(!!document.fullscreenElement);
+
+            // Update container height when fullscreen changes
+            setTimeout(() => {
+                if (slotContainerRef.current) {
+                    const height = slotContainerRef.current.clientHeight;
+                    setContainerHeight(height);
+                }
+            }, 100);
         };
 
         document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -204,6 +254,23 @@ const SlotMachineSection = ({ participants, getWinner }) => {
             );
         };
     }, []);
+
+    // Update container height on resize or initial load
+    useEffect(() => {
+        const updateHeight = () => {
+            if (slotContainerRef.current) {
+                const height = slotContainerRef.current.clientHeight;
+                setContainerHeight(height);
+            }
+        };
+
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+
+        return () => {
+            window.removeEventListener('resize', updateHeight);
+        };
+    }, [isFullscreen]);
 
     const toggleFullscreen = () => {
         const el = containerRef.current;
@@ -345,7 +412,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
 
         const finalY = -(
             randomStopIndex * TOTAL_ITEM_HEIGHT -
-            (VIEWPORT_CENTER - TOTAL_ITEM_HEIGHT / 2)
+            (containerHeight / 2 - TOTAL_ITEM_HEIGHT / 2)
         );
 
         // Phase 1: Fast initial spin (build excitement)
@@ -423,7 +490,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         if (getWinner)
             getWinner({
                 ...actualWinningObject,
-                participant_id:actualWinningObject.id,
+                participant_id: actualWinningObject.id,
                 prize_id: selectedPrize.id,
             });
 
@@ -546,6 +613,45 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                         75% { transform: translateY(-1px) scale(1.02); }
                     }
 
+                    @keyframes rainbowGlow {
+                        0% { 
+                            box-shadow: 0 0 30px 10px rgba(255, 0, 0, 0.8);
+                        }
+                        16% { 
+                            box-shadow: 0 0 30px 10px rgba(255, 127, 0, 0.8);
+                        }
+                        33% { 
+                            box-shadow: 0 0 30px 10px rgba(255, 255, 0, 0.8);
+                        }
+                        50% { 
+                            box-shadow: 0 0 30px 10px rgba(0, 255, 0, 0.8);
+                        }
+                        66% { 
+                            box-shadow: 0 0 30px 10px rgba(0, 0, 255, 0.8);
+                        }
+                        83% { 
+                            box-shadow: 0 0 30px 10px rgba(139, 0, 255, 0.8);
+                        }
+                        100% { 
+                            box-shadow: 0 0 30px 10px rgba(255, 0, 0, 0.8);
+                        }
+                    }
+
+                    @keyframes colorShift {
+                        0% { filter: hue-rotate(0deg) brightness(1.2); }
+                        50% { filter: hue-rotate(180deg) brightness(1.4); }
+                        100% { filter: hue-rotate(360deg) brightness(1.2); }
+                    }
+
+                    @keyframes neonPulse {
+                        0%, 100% { 
+                            box-shadow: 0 0 20px rgba(255, 0, 255, 0.8), 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.1);
+                        }
+                        50% { 
+                            box-shadow: 0 0 40px rgba(255, 0, 255, 1), 0 0 80px rgba(0, 255, 255, 0.8), inset 0 0 40px rgba(255, 255, 255, 0.2);
+                        }
+                    }
+
                     .winner-modal-fade {
                         animation: fadeIn 0.3s ease-out;
                     }
@@ -568,11 +674,11 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                     }
 
                     .spinning-glow {
-                        animation: glow 1s infinite;
+                        animation: none;
                     }
 
                     .spinning-pulse {
-                        animation: pulse 2s infinite;
+                        animation: none;
                     }
 
                     /* Button styles for better performance */
@@ -587,45 +693,52 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                     .btn-idle {
                         font-size: 1.5em;
                         border: 3px solid #FFD700;
-                        background-color: #1E3A8A;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                         color: #FFD700;
                         cursor: pointer;
-                        box-shadow: 0 0 15px rgba(255,215,0,0.9);
+                        box-shadow: 0 0 20px rgba(255, 215, 0, 0.9), 0 5px 15px rgba(0, 0, 0, 0.3);
                         transform: scale(1);
+                        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+                    }
+
+                    .btn-idle:hover {
+                        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+                        box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 5px 20px rgba(0, 0, 0, 0.4);
+                        transform: scale(1.05);
                     }
 
                     .btn-spinning {
                         font-size: 1.8em;
-                        border: 4px solid #3b82f6;
-                        background-color: #3B82F6;
-                        color: #e0f2fe;
+                        border: 4px solid #00f2fe;
+                        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                        color: #ffffff;
                         cursor: not-allowed;
-                        box-shadow: 0 0 30px rgba(59, 130, 246, 0.8), 0 0 50px rgba(59, 130, 246, 0.6);
-                        text-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+                        box-shadow: 0 0 20px rgba(79, 172, 254, 0.7);
+                        text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
                         transform: scale(1.1);
                     }
 
                     .btn-phase-3 {
                         font-size: 2em;
-                        border: 4px solid #2563EB;
-                        background-color: #2563EB;
-                        color: #e0f2fe;
+                        border: 4px solid #f5576c;
+                        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                        color: #ffffff;
                         cursor: not-allowed;
-                        box-shadow: 0 0 50px rgba(37, 99, 235, 0.8), 0 0 80px rgba(59, 130, 246, 0.6);
-                        text-shadow: 0 0 12px rgba(37, 99, 235, 0.8);
+                        box-shadow: 0 0 30px rgba(240, 147, 251, 0.7);
+                        text-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
                         transform: scale(1.15);
                     }
 
                     .btn-phase-4 {
                         font-size: 2.2em;
-                        border: 5px solid #1E40AF;
-                        background-color: #1E40AF;
-                        color: #e0f2fe;
+                        border: 5px solid #ffd700;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+                        color: #ffffff;
                         cursor: not-allowed;
-                        box-shadow: 0 0 60px rgba(30, 64, 175, 1), 0 0 100px rgba(59, 130, 246, 0.8);
-                        text-shadow: 0 0 15px rgba(30, 64, 175, 0.8);
+                        box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 100px rgba(102, 126, 234, 0.9);
+                        text-shadow: 0 0 20px rgba(255, 215, 0, 1), 0 2px 4px rgba(0, 0, 0, 0.5);
                         transform: scale(1.2);
-                        animation: dramaticPulse 0.8s infinite;
+                        animation: dramaticPulse 0.8s infinite, rainbowGlow 1.5s infinite;
                     }
 
                     /* Container styles for better performance */
@@ -636,36 +749,38 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                         margin: 50px auto;
                         border-radius: 24px;
                         color: #ffffffff;
-                        background-color: #000;
+                        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
                         position: relative;
                         transition: all 0.15s ease;
                     }
 
                     .container-idle {
                         border: 4px solid #FFD700;
-                        box-shadow: 0 0 20px rgba(255,215,0,0.6);
+                        box-shadow: 0 0 30px rgba(255, 215, 0, 0.7), inset 0 0 30px rgba(255, 215, 0, 0.1);
                         transform: scale(1);
-                    } base
+                    }
 
                     .container-spinning {
-                        border: 5px solid #3b82f6;
-                        box-shadow: 0 0 30px rgba(59, 130, 246, 0.8);
+                        border: 5px solid #00f2fe;
+                        box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
                         transform: scale(1);
                     }
 
                     .container-phase-3 {
-                        border: 5px solid #2563EB;
-                        box-shadow: 0 0 40px rgba(37, 99, 235, 0.8), 0 0 80px rgba(59, 130, 246, 0.4);
-                        transform: scale(1.02);
+                        border: 5px solid #f5576c;
+                        box-shadow: 0 0 30px rgba(240, 147, 251, 0.6);
+                        transform: scale(1.01);
                     }
 
                     .container-phase-4 {
-                        border: 6px solid #1E40AF;
-                        box-shadow: 0 0 50px rgba(30, 64, 175, 1), 0 0 100px rgba(59, 130, 246, 0.5);
+                        border: 6px solid #ffd700;
+                        box-shadow: 0 0 60px rgba(255, 215, 0, 1), 0 0 120px rgba(102, 126, 234, 0.7);
                         transform: scale(1.05);
+                        animation: rainbowGlow 2s infinite;
                     }
                 `}
             </style>
+
             <button
                 onClick={toggleFullscreen}
                 className="btn-base border border-gray-400 bg-gray-800 text-white hover:bg-gray-700"
@@ -681,47 +796,21 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                     textAlign: 'center',
                     fontFamily: 'sans-serif',
                     background:
-                        spinPhase >= 4
-                            ? 'radial-gradient(circle at center, #4714ffff 0%, #3d1bd6ff 30%, #2b0bb8ff 60%, #000000 100%)'
-                            : spinPhase >= 3
-                              ? 'radial-gradient(circle at center, #2a03d8ff 0%, #4137d4ff 40%, #1a1a1a 100%)'
-                              : isSpinning
-                                ? 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)'
-                                : 'linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%)',
+                        'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+                    // background:
+                    //     spinPhase >= 4
+                    //         ? 'radial-gradient(circle at center, #667eea 0%, #764ba2 30%, #f093fb 60%, #0a0a0a 100%)'
+                    //         : spinPhase >= 3
+                    //           ? 'radial-gradient(circle at center, #f093fb 0%, #f5576c 40%, #1a1a2e 100%)'
+                    //           : 'linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%)',
                     minHeight: '100vh',
                     paddingTop: '50px',
-                    transition: 'background 0.5s ease',
-                    animation:
-                        spinPhase >= 4
-                            ? 'finalMomentShake 0.3s infinite, goldShine 2s ease-in-out infinite'
-                            : spinPhase >= 3
-                              ? 'goldShine 2s ease-in-out infinite'
-                              : 'none',
-                    filter:
-                        spinPhase >= 3
-                            ? 'brightness(1.2) contrast(1.15) saturate(1.3)'
-                            : 'none',
-                    boxShadow:
-                        spinPhase >= 4
-                            ? 'inset 0 0 100px rgba(86, 74, 255, 0.4)'
-                            : spinPhase >= 3
-                              ? 'inset 0 0 60px rgba(72, 7, 192, 0.2)'
-                              : 'none',
+                    // transition: 'background 0.3s ease',
+                    // willChange: 'background',
                 }}
             >
-                {/* Minimal Spinning Overlay Effects */}
-                {isSpinning && (
-                    <div className="pointer-events-none fixed inset-0 z-10">
-                        {/* Simple spotlight effect */}
-                        <div
-                            className="absolute inset-0"
-                            style={{
-                                background:
-                                    'radial-gradient(circle at center, rgba(255,215,0,0.05) 30%, rgba(0,0,0,0.3) 80%)',
-                            }}
-                        />
-                    </div>
-                )}
+                {/* Minimal Spinning Overlay Effects - Only show when NOT spinning fast */}
+
                 {/* Audio */}
                 <audio
                     ref={spinAudioRef}
@@ -746,7 +835,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
 
                 {/* Slot Machine Viewport */}
                 <div className="flex flex-row-reverse items-center justify-center gap-3">
-                    <div className={isFullscreen ? 'w-1/2' : ''}>
+                    <div className={isFullscreen ? 'w-[30%]' : ''}>
                         {isFullscreen && (
                             <SelectPrizeSection
                                 selectedPrize={selectedPrize}
@@ -755,8 +844,17 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                             />
                         )}
                     </div>
+
                     <div
-                        className={`${isFullscreen ? 'w-1/2' : ''} container-base ${getContainerClass()} ${isSpinning ? 'spinning-glow' : ''}`}
+                        ref={slotContainerRef}
+                        className={`${isFullscreen ? 'w-[50%]' : ''} container-base ${getContainerClass()} ${isSpinning ? 'spinning-glow' : ''}`}
+                        style={{
+                            width: isFullscreen ? '50%' : '320px',
+                            maxWidth: isFullscreen ? 'none' : '320px',
+                            height: isFullscreen
+                                ? '70vh'
+                                : `${VIEWPORT_HEIGHT}px`,
+                        }}
                     >
                         <motion.div
                             style={{
@@ -776,11 +874,13 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                     listY={listY}
                                     isSpinning={isSpinning}
                                     spinPhase={spinPhase}
+                                    isFullscreen={isFullscreen}
+                                    containerHeight={containerHeight}
                                 />
                             ))}
                         </motion.div>
 
-                        {/* Center Indicator */}
+                        {/* Center Indicator - More colorful */}
                         <div
                             style={{
                                 position: 'absolute',
@@ -795,23 +895,27 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                         >
                             <div
                                 style={{
-                                    height: '10px',
-                                    backgroundColor: 'red',
+                                    height: '12px',
+                                    background:
+                                        'linear-gradient(90deg, #ff0080, #ff8c00, #ffd700)',
                                     flex: 1,
+                                    boxShadow:
+                                        '0 0 15px rgba(255, 215, 0, 0.8)',
                                 }}
                             />
                             <div
                                 style={{
                                     width: 0,
                                     height: 0,
-                                    borderTop: '10px solid transparent',
-                                    borderBottom: '10px solid transparent',
-                                    borderLeft: '16px solid red',
+                                    borderTop: '12px solid transparent',
+                                    borderBottom: '12px solid transparent',
+                                    borderLeft: '18px solid #ffd700',
+                                    filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.8))',
                                 }}
                             />
                         </div>
 
-                        {/* Gradient Overlay */}
+                        {/* Gradient Overlay - More colorful */}
                         <div
                             style={{
                                 position: 'absolute',
@@ -820,7 +924,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                 width: '100%',
                                 height: '100%',
                                 backgroundImage:
-                                    'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 80%, rgba(0,0,0,1) 100%)',
+                                    'linear-gradient(to bottom, rgba(26, 26, 46, 1) 0%, rgba(26, 26, 46, 0) 20%, rgba(26, 26, 46, 0) 80%, rgba(26, 26, 46, 1) 100%)',
                                 pointerEvents: 'none',
                                 zIndex: 5,
                             }}
@@ -878,8 +982,8 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                 onClick={() => {
                                     setWinner(null);
                                     setHasWinner(false);
-                                    setSelectedPrize(null);
-                                    // setCurrentPrizeInfo(null);
+                                    // DON'T reset selectedPrize - keep it so prize list can update properly
+                                    // setSelectedPrize(null);
                                     setTimeout(() => {
                                         if (
                                             !isSpinning &&
