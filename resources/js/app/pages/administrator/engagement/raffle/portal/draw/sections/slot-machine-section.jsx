@@ -2,6 +2,7 @@ import { get_participants_thunk } from '@/app/redux/raffle-thunk';
 import store from '@/app/store/store';
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { get_prizes_thunk } from '../../../../../../../redux/raffle-thunk';
 import SelectPrizeSection from './select-prize-section';
 
 const ITEM_HEIGHT = 100;
@@ -121,63 +122,71 @@ const SlotMachineSection = ({ participants, getWinner }) => {
     const tadaAudioRef = useRef(null);
 
     const [selectedPrize, setSelectedPrize] = useState(null);
-    const [prizeWinners, setPrizeWinners] = useState({});
+
+    useEffect(() => {
+        if (winner) {
+            store.dispatch(get_prizes_thunk());
+        }
+    }, [winner]);
+    // const [prizeWinners, setPrizeWinners] = useState({});
+    // ADD THIS STATE TO STORE PRIZE INFO
+    // const [currentPrizeInfo, setCurrentPrizeInfo] = useState(null);
 
     // ADD THIS HELPER TO GET PRIZE INFO
-    const getPrizeInfo = (prizeKey) => {
-        const prizes = [
-            {
-                name: 'Sack Of Rice',
-                image: '/images/Rice-removebg-preview.png',
-            },
-            {
-                name: 'Sack Of Rice',
-                image: '/images/Rice-removebg-preview.png',
-            },
-            {
-                name: 'Sack Of Rice',
-                image: '/images/Rice-removebg-preview.png',
-            },
-            {
-                name: 'Sack Of Rice',
-                image: '/images/Rice-removebg-preview.png',
-            },
-            {
-                name: 'Sack Of Rice',
-                image: '/images/Rice-removebg-preview.png',
-            },
-            {
-                name: 'Airconditioner',
-                image: '/images/Aircon-removebg-preview.png',
-            },
-            {
-                name: 'Airconditioner',
-                image: '/images/Aircon-removebg-preview.png',
-            },
-            {
-                name: 'Cellphone',
-                image: '/images/cellphone-removebg-preview.png',
-            },
-            {
-                name: 'Cellphone',
-                image: '/images/cellphone-removebg-preview.png',
-            },
-            {
-                name: 'Cellphone',
-                image: '/images/cellphone-removebg-preview.png',
-            },
-            {
-                name: 'Cellphone',
-                image: '/images/cellphone-removebg-preview.png',
-            },
-            { name: 'Television', image: '/images/TV1-removebg-preview.png' },
-            { name: 'Stand Fan', image: '/images/electric-fan.webp' },
-            { name: 'Stand Fan', image: '/images/electric-fan.webp' },
-            { name: 'Stand Fan', image: '/images/electric-fan.webp' },
-        ];
+    // const getPrizeInfo = (prizeKey) => {
+    //     const prizes = [
+    //         {
+    //             name: 'Sack Of Rice',
+    //             image: '/images/Rice-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Sack Of Rice',
+    //             image: '/images/Rice-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Sack Of Rice',
+    //             image: '/images/Rice-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Sack Of Rice',
+    //             image: '/images/Rice-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Sack Of Rice',
+    //             image: '/images/Rice-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Airconditioner',
+    //             image: '/images/Aircon-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Airconditioner',
+    //             image: '/images/Aircon-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Cellphone',
+    //             image: '/images/cellphone-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Cellphone',
+    //             image: '/images/cellphone-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Cellphone',
+    //             image: '/images/cellphone-removebg-preview.png',
+    //         },
+    //         {
+    //             name: 'Cellphone',
+    //             image: '/images/cellphone-removebg-preview.png',
+    //         },
+    //         { name: 'Television', image: '/images/TV1-removebg-preview.png' },
+    //         { name: 'Stand Fan', image: '/images/electric-fan.webp' },
+    //         { name: 'Stand Fan', image: '/images/electric-fan.webp' },
+    //         { name: 'Stand Fan', image: '/images/electric-fan.webp' },
+    //     ];
 
-        return prizes[prizeKey];
-    };
+    //     return prizes[prizeKey];
+    // };
 
     const LOOP_COUNT = 30;
 
@@ -296,6 +305,8 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         setWinner(null);
         setHasWinner(false);
 
+        // SET CURRENT PRIZE INFO
+        // setCurrentPrizeInfo(getPrizeInfo(selectedPrize));
 
         store.dispatch(get_participants_thunk());
 
@@ -412,14 +423,14 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         if (getWinner)
             getWinner({
                 ...actualWinningObject,
-                ...selectedPrize,
+                participant_id:actualWinningObject.id,
                 prize_id: selectedPrize.id,
             });
 
-        setPrizeWinners((prev) => ({
-            ...prev,
-            [selectedPrize]: actualWinningObject,
-        }));
+        // setPrizeWinners((prev) => ({
+        //     ...prev,
+        //     [selectedPrize]: actualWinningObject,
+        // }));
 
         // Reset audio playback rate
         if (spinAudioRef.current) {
@@ -740,7 +751,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                             <SelectPrizeSection
                                 selectedPrize={selectedPrize}
                                 setSelectedPrize={setSelectedPrize}
-                                prizeWinners={prizeWinners}
+                                // prizeWinners={prizeWinners}
                             />
                         )}
                     </div>
@@ -868,6 +879,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                     setWinner(null);
                                     setHasWinner(false);
                                     setSelectedPrize(null);
+                                    // setCurrentPrizeInfo(null);
                                     setTimeout(() => {
                                         if (
                                             !isSpinning &&
@@ -926,7 +938,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                         {/* {currentPrizeInfo.isGrand
                                             ? 'GRAND PRIZE'
                                             : 'Prize Won'} */}
-                                            Prize Won
+                                        Prize Won
                                     </p>
 
                                     <div className="flex items-center justify-center gap-6 rounded-2xl bg-white p-6 shadow-2xl">

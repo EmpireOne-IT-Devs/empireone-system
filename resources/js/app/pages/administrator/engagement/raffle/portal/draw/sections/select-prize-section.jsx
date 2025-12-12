@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 export default function SelectPrizeSection({
     selectedPrize,
     setSelectedPrize,
-    prizeWinners,
+    // prizeWinners,
 }) {
     const { prizes } = useSelector((state) => state.raffles);
 
@@ -44,8 +44,8 @@ export default function SelectPrizeSection({
             {/* Regular Prizes */}
             <div className="flex w-full flex-row flex-wrap items-center justify-center gap-4">
                 {prizes.map((prize, index) => {
-                    const hasWinner2 = prizeWinners[prize.id];
-                    const hasWinner = prize?.winner ?? hasWinner2;
+                    // const hasWinner2 = prizeWinners[prize.id];
+                    const hasWinner = prize?.winner;
                     const isSelected = selectedPrize?.id === prize?.id;
                     console.log('prize', prize?.winner);
                     return (
