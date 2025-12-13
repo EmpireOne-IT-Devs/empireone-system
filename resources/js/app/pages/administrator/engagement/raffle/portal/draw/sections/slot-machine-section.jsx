@@ -908,7 +908,8 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                 </div>
 
                 {/* Spin Button - MODIFIED TO CHECK PRIZE SELECTION */}
-                <button
+                <div className="flex justify-center -mt-7">
+                     <button
                     onClick={spinToResult}
                     disabled={
                         isSpinning || (!selectedPrize && selectedPrize !== 0)
@@ -921,6 +922,8 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                           ? '🎰 SPINNING... 🎰'
                           : '🎯 SPIN THE SLOT MACHINE! 🎯'}
                 </button>
+                </div>
+               
 
                 {/* Winner Modal - MODIFIED TO SHOW PRIZE */}
                 {winner && (
