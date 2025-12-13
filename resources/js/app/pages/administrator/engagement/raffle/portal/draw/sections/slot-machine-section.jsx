@@ -12,8 +12,18 @@ const VIEWPORT_HEIGHT = 370;
 const VIEWPORT_CENTER = VIEWPORT_HEIGHT / 2;
 const SCALING_RANGE = TOTAL_ITEM_HEIGHT * 1.5;
 
+// OPTIMIZATION: Reduce loop count for large datasets
+const getOptimalLoopCount = (participantCount) => {
+    if (participantCount > 200) return 8;  // For 360 participants
+    if (participantCount > 100) return 12;
+    return 20;
+};
+
+// OPTIMIZATION: Only render visible items + buffer
+const VISIBLE_ITEMS = Math.ceil(VIEWPORT_HEIGHT / TOTAL_ITEM_HEIGHT) + 4; // 4 buffer items
+
 /* -----------------------------------------
-    Scaling Item (Enhanced with Dramatic Thrill Effects)
+    Scaling Item (Optimized)
 ----------------------------------------- */
 const ScalingItem = React.memo(
     ({
@@ -28,7 +38,6 @@ const ScalingItem = React.memo(
         const itemCenterOffset =
             itemIndex * TOTAL_ITEM_HEIGHT + TOTAL_ITEM_HEIGHT / 2;
 
-        // Use dynamic viewport center based on actual container height
         const dynamicViewportCenter = containerHeight / 2;
 
         const scale = useTransform(listY, (currentY) => {
@@ -41,10 +50,8 @@ const ScalingItem = React.memo(
                 SCALING_RANGE,
             );
 
-            // Simpler scaling for better performance
             const baseScale = 1.2 - 0.3 * (normalizedDistance / SCALING_RANGE);
 
-            // Only apply phase multiplier during final phase
             let phaseMultiplier = 1;
             if (spinPhase >= 4 && !isSpinning) {
                 phaseMultiplier = 1.1;
@@ -53,7 +60,6 @@ const ScalingItem = React.memo(
             return baseScale * phaseMultiplier;
         });
 
-        // Simpler opacity calculation
         const opacity = useTransform(listY, (currentY) => {
             const itemAbsoluteY = itemCenterOffset + currentY;
             const distanceFromCenter = Math.abs(
@@ -67,7 +73,6 @@ const ScalingItem = React.memo(
             return 1 - (normalizedDistance / (SCALING_RANGE * 1.5)) * 0.5;
         });
 
-        // Memoize base styles with lighter transitions
         const baseStyles = useMemo(
             () => ({
                 width: '90%',
@@ -87,36 +92,30 @@ const ScalingItem = React.memo(
             [scale, opacity],
         );
 
-        // Lighter phase-specific styles - remove heavy animations during spin
+        // OPTIMIZATION: Simplified styles during fast spinning
         const getPhaseStyles = useMemo(() => {
-            // During fast spinning, use simpler styles
-            if (isSpinning && spinPhase < 4) {
+            if (isSpinning && spinPhase < 3) {
+                // Minimal styles during fast spin
                 return {
-                    background:
-                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    boxShadow: 'none',
                     fontSize: '1.4em',
                     textShadow: '0 2px 4px rgba(0,0,0,0.5)',
                     border: '1px solid rgba(255, 255, 255, 0.2)',
                 };
             }
 
-            // Only show fancy effects during slow phases or stopped
             if (spinPhase >= 4) {
                 return {
-                    background:
-                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    boxShadow:
-                        '0 0 30px rgba(102, 126, 234, 0.8), 0 0 60px rgba(118, 75, 162, 0.6)',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    boxShadow: '0 0 30px rgba(102, 126, 234, 0.8), 0 0 60px rgba(118, 75, 162, 0.6)',
                     border: '3px solid #ffd700',
                     fontSize: '1.6em',
-                    textShadow:
-                        '0 0 15px rgba(255, 215, 0, 0.8), 0 2px 4px rgba(0,0,0,0.5)',
+                    textShadow: '0 0 15px rgba(255, 215, 0, 0.8), 0 2px 4px rgba(0,0,0,0.5)',
                 };
             } else if (spinPhase >= 3) {
                 return {
-                    background:
-                        'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
                     boxShadow: '0 0 25px rgba(240, 147, 251, 0.7)',
                     border: '2px solid #ffd700',
                     fontSize: '1.5em',
@@ -124,8 +123,7 @@ const ScalingItem = React.memo(
                 };
             } else {
                 return {
-                    background:
-                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
                     fontSize: '1.4em',
                     textShadow: '0 2px 4px rgba(0,0,0,0.5)',
@@ -162,8 +160,10 @@ const SlotMachineSection = ({ participants, getWinner }) => {
     const tadaAudioRef = useRef(null);
     const slotContainerRef = useRef(null);
     const [containerHeight, setContainerHeight] = useState(VIEWPORT_HEIGHT);
-
     const [selectedPrize, setSelectedPrize] = useState(null);
+
+    // OPTIMIZATION: Calculate optimal loop count based on participant size
+    const LOOP_COUNT = useMemo(() => getOptimalLoopCount(participants.length), [participants.length]);
 
     useEffect(() => {
         if (winner) {
@@ -229,8 +229,6 @@ const SlotMachineSection = ({ participants, getWinner }) => {
 
     //     return prizes[prizeKey];
     // };
-
-    const LOOP_COUNT = 30;
 
     useEffect(() => {
         const handleFullscreenChange = () => {
@@ -310,14 +308,14 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         return 'container-idle';
     };
 
-    // Initialize duplicated items when participants change
+    // OPTIMIZATION: Initialize duplicated items
     React.useEffect(() => {
         const newDuplicatedItems = Array.from(
             { length: LOOP_COUNT },
             () => participants,
         ).flat();
         setDuplicatedItems(newDuplicatedItems);
-    }, [participants]);
+    }, [participants, LOOP_COUNT]);
 
     // Idle animation effect - slow continuous spin when not spinning and no winner
     React.useEffect(() => {
@@ -360,7 +358,6 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         SPIN LOGIC (MODIFIED TO CHECK PRIZE SELECTION)
     ----------------------------------------- */
     const spinToResult = async () => {
-        // CHECK IF PRIZE IS SELECTED
         if (!selectedPrize && selectedPrize !== 0) {
             alert('Please select a prize first!');
             return;
@@ -371,9 +368,6 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         setSpinPhase(1);
         setWinner(null);
         setHasWinner(false);
-
-        // SET CURRENT PRIZE INFO
-        // setCurrentPrizeInfo(getPrizeInfo(selectedPrize));
 
         store.dispatch(get_participants_thunk());
 
@@ -403,7 +397,8 @@ const SlotMachineSection = ({ participants, getWinner }) => {
         const startingPosition = 0;
         listY.set(startingPosition);
 
-        const fullLoops = 12; // Increased loops for more drama
+        // OPTIMIZATION: Reduce loops for large datasets (already spinning 8 times = 2,880 items visible)
+        const fullLoops = participants.length > 200 ? 5 : 12;
 
         const minIndex = fullLoops * participants.length;
         const maxIndex = freshDuplicatedItems.length - participants.length;
@@ -415,23 +410,20 @@ const SlotMachineSection = ({ participants, getWinner }) => {
             (containerHeight / 2 - TOTAL_ITEM_HEIGHT / 2)
         );
 
-        // Phase 1: Fast initial spin (build excitement)
+        // OPTIMIZATION: Faster initial phases for large datasets
         setSpinPhase(1);
         await animate(listY, finalY * 0.4, {
-            duration: 3,
+            duration: participants.length > 200 ? 2 : 3,
             ease: 'linear',
         });
 
-        // Phase 2: Medium speed with slight deceleration (building tension)
         setSpinPhase(2);
         await animate(listY, finalY * 0.75, {
-            duration: 3.5,
+            duration: participants.length > 200 ? 2.5 : 3.5,
             ease: [0.2, 0, 0.8, 1],
         });
 
-        // Phase 3: Dramatic slow-motion approach (maximum thrill)
         setSpinPhase(3);
-        // Slow down audio for dramatic effect
         if (spinAudioRef.current) {
             spinAudioRef.current.playbackRate = 0.7;
         }
@@ -440,39 +432,32 @@ const SlotMachineSection = ({ participants, getWinner }) => {
             ease: [0.4, 0, 0.6, 1],
         });
 
-        // Phase 4: Ultra slow-motion final selection (heart-stopping moment)
         setSpinPhase(4);
-        // Even slower audio for maximum tension
         if (spinAudioRef.current) {
             spinAudioRef.current.playbackRate = 0.4;
         }
         await animate(listY, finalY, {
             duration: 7,
-            ease: [0.08, 0.82, 0.17, 1], // Very dramatic ease-out
+            ease: [0.08, 0.82, 0.17, 1],
         });
 
-        // Phase 5: Final positioning
         setSpinPhase(5);
-        // Stop audio for dramatic silence
         if (spinAudioRef.current) {
             spinAudioRef.current.pause();
         }
 
-        // Tiny bounce back for dramatic effect
         await animate(listY, finalY + TOTAL_ITEM_HEIGHT * 0.15, {
             duration: 0.4,
             ease: 'easeOut',
         });
 
-        // Final settle into position
         await animate(listY, finalY, {
             duration: 1.2,
             ease: [0.25, 0.46, 0.45, 0.94],
         });
 
-        // Play tada sound when slot machine stops
         if (tadaAudioRef.current) {
-            tadaAudioRef.current.volume = 1.0; // Maximum volume
+            tadaAudioRef.current.volume = 1.0;
             tadaAudioRef.current.currentTime = 0;
             tadaAudioRef.current.play().catch((error) => {
                 console.log('Tada audio play failed:', error);
@@ -481,8 +466,6 @@ const SlotMachineSection = ({ participants, getWinner }) => {
 
         setIsSpinning(false);
         setSpinPhase(0);
-
-        // Mark that we have a winner to stop all animations
         setHasWinner(true);
 
         const actualWinningObject = freshDuplicatedItems[randomStopIndex];
@@ -494,23 +477,15 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                 prize_id: selectedPrize.id,
             });
 
-        // setPrizeWinners((prev) => ({
-        //     ...prev,
-        //     [selectedPrize]: actualWinningObject,
-        // }));
-
-        // Reset audio playback rate
         if (spinAudioRef.current) {
             spinAudioRef.current.playbackRate = 1.0;
         }
 
-        // Stop any idle animation immediately when winner is selected
         if (idleAnimationRef.current) {
             idleAnimationRef.current.stop();
             idleAnimationRef.current = null;
         }
 
-        // Wait 3 seconds before showing the winner modal for more dramatic pause
         setTimeout(() => {
             if (winAudioRef.current) {
                 winAudioRef.current.currentTime = 0;
@@ -834,8 +809,8 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                 />
 
                 {/* Slot Machine Viewport */}
-                <div className="flex flex-row-reverse items-center justify-center gap-3">
-                    <div className={isFullscreen ? 'w-[30%]' : ''}>
+                <div className="flex flex-row-reverse items-center justify-center ">
+                    <div className={isFullscreen ? 'w-[30%] ' : ''}>
                         {isFullscreen && (
                             <SelectPrizeSection
                                 selectedPrize={selectedPrize}
