@@ -961,7 +961,7 @@ const SlotMachineSection = ({ participants, getWinner }) => {
                                     setWinner(null);
                                     setHasWinner(false);
                                     // DON'T reset selectedPrize - keep it so prize list can update properly
-                                    // setSelectedPrize(null);
+                                    setSelectedPrize(null);
                                     setTimeout(() => {
                                         if (
                                             !isSpinning &&
